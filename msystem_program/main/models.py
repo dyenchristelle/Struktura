@@ -32,7 +32,7 @@ class Products(models.Model):
     item_quantity = models.IntegerField(db_column="product_quantity")
     item_description = models.CharField(max_length=500, db_column="product_description")
     item_price = models.DecimalField(max_digits=10, decimal_places=2, db_column="product_price")
-    item_image = models.ImageField(upload_to='main/css/admin/pics/', db_column="product_image")
+    item_image = models.ImageField(upload_to='media/products_images/', db_column="product_image")
     item_category = models.ForeignKey(Category, on_delete=models.CASCADE, db_column="category_name")
     subcategory = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, null=True, blank=True, db_column="subcategory_id")
 

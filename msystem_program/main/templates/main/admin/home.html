@@ -23,26 +23,18 @@
     <!-- Category Section -->
     <div class="category-section">
         <div class="category-grid">
-            <a href="{% url 'category' 'Living Room' %}" class="category-card">
-                <img src="{% static 'main/css/admin/pics/livingroom.jpg' %}" alt="Living Room">
-                <h3>Living Room</h3>
-            </a>
-            <a href="{% url 'category' 'Bedroom' %}" class="category-card">
-                <img src="{% static 'main/css/admin/pics/bedroom.jpg' %}" alt="Bedroom">
-                <h3>Bedroom</h3>
-            </a>
-            <a href="{% url 'category' 'Kitchen' %}" class="category-card">
-                <img src="{% static 'main/css/admin/pics/kitchen.jpg' %}" alt="Kitchen">
-                <h3>Kitchen</h3>
-            </a>
-            <a href="{% url 'category' 'Bathroom and Laundry' %}" class="category-card">
-                <img src="{% static 'main/css/admin/pics/bathroomandlaundry.jpg' %}" alt="Bathroom">
-                <h3>Bathroom & Laundry</h3>
-            </a>
-            <a href="{% url 'category' 'Tables and Chairs' %}" class="category-card">
-                <img src="{% static 'main/css/admin/pics/tablesandchairs.jpg' %}" alt="Tables and Chairs">
-                <h3>Tables and Chairs</h3>
-            </a>
+            {% for category in categories %}
+                <a href="{% url 'category' category.name %}" class="category-card">
+                    {% if category.image %}
+                        <img src="{{ category.image.url }}" alt="{{ category.name }}">
+                    {% else %}
+                        <img src="{% static 'products_images/default.jpg' %}" alt="{{ category.name }}">
+                    {% endif %}
+                    <h3>{{ category.name|upper }}</h3>
+                </a>
+            {% empty %}
+                <p>No categories available</p>
+            {% endfor %}
         </div>
     </div>
 </section>

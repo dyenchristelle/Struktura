@@ -1,41 +1,71 @@
 {% extends "main/admin/layout.html" %}
+{% load static %}
 {% block content %}
-<div class="page-layout">
-
-    <!-- Left: category/subcategory tree -->
-    <div class="left-sidebar">
-        <ul class="category-tree">
-            {% for cat, subs in category_tree.items %}
-                <li>
-                    {{ cat }}
-                    <ul>
-                        {% for sub in subs %}
-                            <li>
-                                <a href="{% url 'category_sub' cat sub %}">{{ sub }}</a>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </li>
+<main class="category-page">
+    <div class="page-layout">
+        <div class="title-row">
+            <h2> {{ category }} </h2>
+            <span class="sub"> &#9776; </span>
+            <ul class="dropdown-content">
+                {% if category_tree.children %}
+                    {% for sub in category_tree.children %}
+                        <li>
+                            {{ sub.name }}
+                            {% if sub.children %}
+                                <ul>
+                                    {% for prod in sub.children %}
+                                        <li>{{ prod.name }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                {% else %}
+                    <li>No subcategories available</li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="products-section">
+            {% for product in products %}
+                <div class="product-card">
+                    <!-- Product Image -->
+                    {% if product.item_image %}
+                        <img src="{{ product.item_image.url }}" alt="{{ product.item_name }}" class="product-image">
+                    {% else %}
+                        <img src="{% static 'main/css/admin/pics/default.jpg' %}" alt="No image" class="product-image">
+                    {% endif %} 
+                    <strong>{{ product.item_name }}</strong>
+                    <p>Quantity: {{ product.item_quantity }}</p>
+                    <p>Price: ₱{{ product.item_price }}</p>
+                    <p>Description: {{ product.item_description }}</p>
+                    <a class="button" href="{% url 'update_product' product.item_id %}">Update</a>
+                    <a class="button" href="{% url 'delete_product' product.item_id %}">Delete</a>
+                </div>
+            {% empty %}
+                <p>No products available in this category/subcategory.</p>
             {% endfor %}
-        </ul>
-    </div>
+        </div>
 
-    <!-- Right: products -->
-     <h2>{{ category }}</h2>
-    <div class="products-section">
-        {% for product in products %}
-            <div class="product-card">
-                <strong>{{ product.item_name }}</strong>
-                <p>Quantity: {{ product.item_quantity }}</p>
-                <p>Price: ₱{{ product.item_price }}</p>
-                <p>Description: {{ product.item_description }}</p>
-                <a class="button" href="{% url 'update_product' product.item_id %}">Update</a>
-                <a class="button" href="{% url 'delete_product' product.item_id %}">Delete</a>
-            </div>
-        {% empty %}
-            <p>No products available in this category/subcategory.</p>
-        {% endfor %}
     </div>
-
-</div>
+</main>
 {% endblock %}
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const dropdownBtn = document.querySelector(".sub");
+        const dropdownContent = document.querySelector(".dropdown-content");
+
+        dropdownBtn.addEventListener("click", (event) => {
+            event.stopPropagation(); // Prevent the click from bubbling
+            dropdownContent.classList.toggle("show");
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener("click", (event) => {
+            // Only close if click is outside the title row
+            if (!event.target.closest(".title-row")) {
+                dropdownContent.classList.remove("show");
+            }
+        });
+    });
+</script>

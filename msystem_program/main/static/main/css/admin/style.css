@@ -31,9 +31,38 @@ main {
     justify-content: center;
     align-items: center;
     background:
+        linear-gradient(rgba(33, 33, 33, 0.488), rgba(33, 33, 33, 0.499)),
+        url('pics/ito.jpg') no-repeat center center fixed;
+    background-size: cover;
+}
+
+.category-page {
+    height: 88vh; /* always full viewport */
+    width: 100vw;
+    padding-top: 10px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    background:
         linear-gradient(rgba(32, 32, 32, 0.5), rgba(33, 33, 33, 0.3)),
         url('pics/ito.jpg') no-repeat center center fixed;
     background-size: cover;
+    background-attachment: fixed;
+}
+
+.page-layout {
+  height: 100vh; /* Full height of the viewport */
+  overflow-y: auto; /* Enables vertical scrolling */
+  overflow-x: hidden;
+  background: rgba(255, 255, 255, 0); /* Optional semi-transparent layer */
+  backdrop-filter: blur(5px); /* Optional glass effect */
+  padding: 20px;
+}
+
+.page-layout::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
 }
 
 /* ===== Login Form ===== */
@@ -146,11 +175,14 @@ footer {
 .products-section {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  justify-items: center;
-  margin-top: 3%;
-  margin-left: 5%;
-  margin-right: 5%;
+  gap: 15px;
+  justify-items: flex-start;
+  margin: 0;
+  clear: both; /* ensures it starts below previous elements */
+  align-items: start;
+  position: relative;
+  z-index: 1;
+  width: 100%;
 }
 
 .product-card {
@@ -161,19 +193,23 @@ footer {
   text-align: center;
   padding: 50px;
   transition: 0.3s;
+  justify-content: flex-start;
 }
 
 .product-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    box-shadow: 0 6px 20px rgba(255, 182, 70, 0.4);
 }
 
-/* .product-card img {
-    width: 100%;
-    height: 250px;
+.product-card img {
+    width: 190px;
+    height: 160px;
     object-fit: cover;
-    border-radius: 10px;
-} */
+    border-radius: 10%;
+    border: 1px solid rgba(255, 255, 255, 0.368);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5));
+}
 
 
 /* Products Title */
@@ -430,14 +466,62 @@ body.delete-bg {
     transform: scale(1.03);
 }
 
-h2 {
+
+.title-row {
+    display: flex;
+    justify-content: space-between; /* left & right alignment */
+    align-items: center;            /* vertically centered */
+    padding: 0 40px;                /* spacing from screen edges */
+    margin-top: 0;
+    margin-bottom: 10px;
+    position: relative;    /* keep in normal flow */
+    z-index: 10; 
+}
+
+
+.title-row h2 { 
     font-family: "Roboto", Helvetica, sans-serif;
     letter-spacing: 1px;
     font-size: 30px;
-    margin-bottom: 0px;
     color: #faf2e1;
-    text-align: center;
+    text-transform: uppercase;
+    margin: 0; /* remove extra spacing */
+    position: relative;
+    z-index: 2;
 }
+
+.title-row .sub { 
+    font-family: "Roboto", Helvetica, sans-serif;
+    font-size: 18px;
+    color: #faf2e1;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    position: relative;
+    background-color: #3f3f3f4e;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.sub:hover {
+    transform: scale(1.1);
+    background-color: #674f1ca0;
+}
+
+/* Dropdown menu */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #3f3f3f;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 10;
+}
+
+.dropdown-content.show {
+    display: block;
+}
+
 
 strong {
     font-family: "Roboto", Helvetica, sans-serif;
@@ -642,8 +726,11 @@ a.button {
     justify-content: space-between;
     align-items: center;
     padding: 15px 30px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* clean, professional font */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     position: sticky;
+    top: 0; /* 👈 this is required */
+    background-color: white; /* optional but helps visibility */
+    z-index: 100; /* keep above content */
 }
 
 /* Admin panel title */
@@ -673,6 +760,7 @@ a.button {
     font-weight: 600;   
     transform: scale(1.05); 
     color: #bb6d19;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 
@@ -739,4 +827,14 @@ a.button {
     background-color: #999; /* darker gray */
     color: white;
     transform: scale(1.05);
+}
+
+/* PRODUCT IMAGE */
+.product-image {
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 10px;
 }

@@ -1,25 +1,18 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .models import Products, Customers, Category
+from .models import Products, Customers, Category, SubCategory
 from decimal import Decimal
 from django.contrib.auth.models import User
 from functools import wraps
 
-# last edit: 10/21/25
+# last edit: 10/24/25
 
-# Create your views here.
-# def user_index(request):
-#     return render(request, "main/user/user-index.html")
-
-# def admin_index(request):
-#     return render(request, "main/admin/admin-index.html")
-
-# def admin_homepage(request):
-#     return render(request, "main/admin/homepage.html")
-
-# def admin_products(request):
-#     return render(request, "main/admin/products.html")
+class TreeNode:
+    def __init__(self, name, obj=None):
+        self.name = name     # category, subcategory, or product name
+        self.obj = obj       # store model object
+        self.children = []   # list of child TreeNode
 
 
 
@@ -62,25 +55,19 @@ def logout_user(request):
     request.session.flush()
     return redirect("login")
 
-
+#  HOMEPAGE
 def home_page(request):
     categories = Category.objects.all()
     return render(request, 'main/admin/home.html', {'categories': categories})
 
+# SEARCH
 def search_view(request):
     search_query = request.GET.get('search', '') 
     return render(request, 'main/admin/home.html', {'search_query': search_query})
 
 
-# 8-30-25
-# def user_acc(request):
 
-#     return render(request, "main/admin/user_acc.html") 
-
-# def products(request):
-#     products = Products.objects.all()
-#     return render(request, "main/admin/products.html", {"products": products})
-
+# === ADD PRODUCT ===
 @login_required_custom
 def add_product(request):
     print("add_product view called")
@@ -88,16 +75,28 @@ def add_product(request):
         name = request.POST.get("product_name")
         quantity = request.POST.get("product_quantity")
         price = request.POST.get("product_price")
+        description = request.POST.get("product_description")
         category_id = request.POST["category_name"]
         subcategory = request.POST.get("subcategory_id")
-        # image = request.FILES.get("Image")
-        print("Received POST data:", name, quantity, price, category_id, subcategory)
+        image = request.FILES.get("product_image")
+        print("Received POST data:", name, quantity, price, category_id, subcategory, image, description)
 
         try:
             quantity = int(quantity)
             price = Decimal(price)
-            category = Category.objects.get(pk=int(category_id))
-            Products.objects.create(item_name=name, item_quantity=quantity, item_price=price, item_category=category, subcategory=subcategory)
+            category_obj = Category.objects.get(pk=int(category_id))
+            subcategory_obj = None
+            if subcategory:
+                subcategory_obj = SubCategory.objects.get(pk=int(subcategory))
+            Products.objects.create(
+                item_name=name,
+                item_quantity=quantity,
+                item_price=price,
+                item_description=description,
+                item_category=category_obj,
+                subcategory=subcategory_obj, 
+                item_image=image
+            )
             print("Item added.")
             return redirect("add_product")
         except Exception as e:
@@ -112,24 +111,24 @@ def add_product(request):
 @login_required_custom
 def update_product(request, product_id):
     product = get_object_or_404(Products, pk=product_id)
+    category = product.item_category
     if request.method == "POST":
         product.item_name = request.POST.get("product_name")
         product.item_quantity = int(request.POST.get("product_quantity"))
         product.item_price = Decimal(request.POST.get("product_price"))
-        category_id = request.POST.get("category_id")
-        product.item_category = Category.objects.get(pk=category_id)
         product.save()
-        return redirect("category")
-    return render(request, "main/admin/update_product.html", {"product": product})
+        return redirect("category", category.name)
+    return render(request, "main/admin/update_product.html", {"product": product, "category": category,})
 
 # ===== DELETE PRODUCT =====
 @login_required_custom
 def delete_product(request, product_id):
     product = get_object_or_404(Products, pk=product_id)
+    category = product.item_category
     if request.method == "POST":
         product.delete()
-        return redirect("category")
-    return render(request, "main/admin/delete_product.html", {"product": product})
+        return redirect("category", category.name)
+    return render(request, "main/admin/delete_product.html", {"product": product, "category": category, })
 
 # ===== CUSTOMERS PAGE =====
 @login_required_custom
@@ -150,20 +149,47 @@ def delete_customer(request, customer_id):
 @login_required_custom
 def category_page(request, category):
     products = Products.objects.filter(item_category__name=category)
-    return render(request, "main/admin/category.html", {"category": category,"products": products})
+
+    category_obj = Category.objects.get(name=category)
+    root_node = TreeNode(category_obj.name, obj=category_obj)
+
+    subcategories = SubCategory.objects.filter(category=category_obj)
+    for sub in subcategories:
+        sub_node = TreeNode(sub.name, obj=sub)
+        products_in_sub = Products.objects.filter(item_category=category_obj, subcategory=sub)
+        for prod in products_in_sub:
+            prod_node = TreeNode(prod.item_name, obj=prod)
+            sub_node.children.append(prod_node)
+        root_node.children.append(sub_node)
+
+    return render(request, "main/admin/category.html", {
+        "category": category,
+        "products": products,
+        "category_tree": root_node,
+    })
+
 
 @login_required_custom
 def subcategory_page(request, category, subcategory):
-    products = Products.objects.filter(item_category__name=category, subcategory__iexact=subcategory)
-    category_tree = {category: Products.objects.filter(item_category__name__iexact=category).exclude(subcategory__isnull=True)
-                    .exclude(subcategory__exact="")
-                    .values_list('subcategory', flat=True)
-                    .distinct()
-                    .values_list('subcategory', flat=True)
-                    .distinct()}
-    return render(request, 'main/admin/category.html', {
-        'category_tree': category_tree,
-        'category': category,
-        'subcategory': subcategory,
-        'products_furniture': products,
+    products = Products.objects.filter(
+        item_category__name=category, subcategory__name__iexact=subcategory
+    )
+
+    category_obj = Category.objects.get(name=category)
+    root_node = TreeNode(category_obj.name, obj=category_obj)
+
+    subcategories = SubCategory.objects.filter(category=category_obj)
+    for sub in subcategories:
+        sub_node = TreeNode(sub.name, obj=sub)
+        products_in_sub = Products.objects.filter(item_category=category_obj, subcategory=sub)
+        for prod in products_in_sub:
+            prod_node = TreeNode(prod.item_name, obj=prod)
+            sub_node.children.append(prod_node)
+        root_node.children.append(sub_node)
+
+    return render(request, "main/admin/category.html", {
+        "category_tree": root_node, 
+        "category": category,
+        "subcategory": subcategory,
+        "products_furniture": products,
     })
