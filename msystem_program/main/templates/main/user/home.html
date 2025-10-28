@@ -1,0 +1,205 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Struktura</title>
+    <link rel="stylesheet" href="{% static 'main/css/user/home.css' %}">
+    <link rel="stylesheet" href="media/pictureneed">
+    <script src="home.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@100;300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Mooli&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+</head>
+<body>
+    <div class="body">
+        <div class="bodywrap">
+            <div class="header">
+
+                <input type="checkbox" name="" id="toggler">
+                <label for="toggler" class="fas fa-bars"></label>
+
+                <img src="pictureneed/logo1.png" alt="logo" class="logo" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
+
+                <nav class="navbar">
+                    <a href="{% url 'home_user' %}">Home</a>
+                    <a href="{% url 'home' %}">Product</a>
+                    <a href="{% url 'about' %}">About</a>
+                    <a href="#footer">Info Hub</a>
+                </nav>
+                <div class="icon">
+                    <a href="{% url 'account' %}"><i class="fa-solid fa-circle-user"></i></a> 
+                    <i class="fa-solid fa-cart-shopping"></i>
+                </div>
+            </div>
+
+            <div class="brownbox">
+                <h2>Enhance Your House Beauty <br> with Struktura Furniture</h2>
+                <p>Upgrade your home's aesthetic appeal with <br> our exquisite collection of furniture.</p>
+            </div>
+
+            <section>
+            <div class="collection">
+                <h2>Collection</h2>
+            </div>
+
+            <div class="ellipse">
+
+                <div class="items">
+                    <img src="{% static 'media/pictureneed/kitchen.jpg' %}" alt="kitchen">
+                    <p>Kitchen</p>
+                </div>
+
+                <div>
+                    <img src="{% static 'media/pictureneed/bed.png' %}" alt="bed">
+                    <p>Bed</p>
+                </div>
+
+                <div>
+                    <img src="{% static 'media/pictureneed/chair.jpg' %}" alt="chair">
+                    <p>Chair</p>
+                </div>
+
+                <div>
+                    <img src="{% static 'media/pictureneed/livingroom.jpg' %}" alt="livingroom">
+                    <p>Living Room</p>
+                </div>
+
+                <div>
+                    <img src="{% static 'media/pictureneed/table.jpg' %}" alt="table">
+                    <p>Table</p>
+                </div>
+            </div>
+            </section>
+
+            <section>
+                <div class="bluebox">
+                    <h2>Transform Your Home <br> with Furniture</h2>
+                </div>
+            </section>
+
+            <section>
+                <div class="best">
+                        <h2>Best Selling Items</h2>
+                </div>
+
+                <div class="container">
+
+                    <div class="box">
+                        <img src="{% static 'media/pictureneed/Aurora Rattan Chair .jpeg' %}" alt="rchair">
+                        <p class="item_name">Aurora Rattan Chair</p>
+                        <p class="star">★★★★★</p>
+                        <p class="price">₱4,999</p>
+                    </div>
+
+                    <div class="box">
+                        <img src="{% static 'media/pictureneed/Grains 6-Seater Dining Set (White-Beige) .jpg' %}" alt="diningset">
+                        <p class="item_name">Grains 6-Seater Dining Set</p>
+                        <p class="star">★★★★★</p>
+                        <p class="price">₱16,990</p>
+                    </div>
+
+                    <div class="box">
+                        <img src="{% static 'media/pictureneed/Jeager Dining Table 180cm (Walnut) .jpg' %}" alt="jeagerdining">
+                        <p class="item_name">Jeager Dining Table 240cm</p>
+                        <p class="star">★★★★★</p>
+                        <p class="price">₱21,990</p>
+                    </div>
+
+                    <div class="box">
+                        <img src="{% static 'media/pictureneed/Michell Wood Dining Set (Walnut) .jpg' %}" alt="wooddining">
+                        <p class="item_name">Michell Wood Dining Set</p>
+                        <p class="star">★★★★★</p>
+                        <p class="price">₱14,990</p>
+                    </div>
+
+                    <div class="box">
+                        <img src="{% static 'media/pictureneed/VALERIE-METAL-WIDE-SINGLE-BED.jpg' %}" alt="singlebed">
+                        <p class="item_name">Valerie Metal Wide Single Bed</p>
+                        <p class="star">★★★★★</p>
+                        <p class="price">₱10,995</p>
+                    </div>
+
+                    <div class="box">
+                        <img src="{% static 'media/pictureneed/Viko Chest of 6 Drawers 120cm (White) .jpg' %}" alt="drawer">
+                        <p class="item_name">Viko Chest of 6 Drawers</p>
+                        <p class="star">★★★★★</p>
+                        <p class="price">₱8,990</p>
+                    </div>
+
+                </div>
+            </section>
+
+            <section>
+                <div class="boxbrown">
+                    <h2 class="quote">Where design meets <br> enduring quality.</h2>
+                    <h2 class="title">Struktura</h2>
+                </div>
+            </section>
+
+            <section class="about">
+                    <div class="chair"><img src="{% static 'media/pictureneed/chairr.jpg' %}" alt="chair"></div>
+                    <h3 class="sentence">Struktura Furniture Shop is dedicated to <br>
+                        crafting high-quality, stylish, and durable  <br>
+                        pieces that bring both elegance and <br>
+                        functionality to every home. <br> With a focus on
+                        timeless design and expert craftsmanship,<br>
+                        Struktura transforms spaces into refined <br>
+                        living environments built to last.</h3>
+            </section>
+
+            <section>
+                <div class="logoimg">
+                    <img src="{% static 'media/pictureneed/logo1.png' %}" alt="logo">
+                </div>
+            </section>
+
+        </div>
+
+        <footer>
+            <section class="container1" id="footer">
+                <div class="footer-inner">
+                    <div class="last">
+                        <h2 class="title1">Struktura</h2>
+                        <p class="description">Connect with Struktura today and let us help you build your ideal space.</p>
+                        <div class="emailicon"><i class="fa-solid fa-envelope"></i></div>
+                    </div>
+
+                    <div class="last">
+                        <h2>Company</h2>
+                        <a href="{% url 'contact' %}">Contact Us | Address </a>
+                        <a href="{% url 'about' %}">About Us</a>
+                    </div>
+
+                    <div class="last">
+                        <h2>Resources</h2>
+                        <a href="{% url 'privacy' %}">Privacy Policy</a>
+                        <a href="{% url 'terms' %}">Terms & Conditions</a>
+                        <a href="{% url 'return_page' %}">Return & Refund Policy</a>
+                    </div>
+
+                    <div class="last">
+                        <h2>Support</h2>
+                        <a href="{% url 'help_center' %}">Help Center</a>
+                        <a href="{% url 'faq' %}">FAQs</a>
+                        <a href="{% url 'security' %}">Security</a>
+                    </div>
+                </div>
+            </section>
+        </footer>
+
+        <footer>
+            <section class="container2">
+                <div class="copyright">
+                    <p>© 2025 Struktura Furniture Shop. All rights reserved.</p>
+                </div>
+            </section>
+        </footer>
+
+               
+    </div>
+        
+</body>
+</html> 

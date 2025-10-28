@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Security | Struktura</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'main/css/user/security.css' %}">
+  <style>
+    
+  </style>
+</head>
+<body>
+  <header>
+    <a class="home-link" href="{% url 'home_user' %}"><i class="fa-solid fa-house home-icon"></i></a>
+    <h1>Security</h1>
+    <p>How Struktura keeps your information safe and protected.</p>
+  </header>
+
+  <main>
+    <h2>Our Commitment to Your Security</h2>
+    <p>At Struktura, we value your trust. Protecting your personal information and ensuring secure transactions are top priorities. We use reliable technologies and follow strict protocols to keep your data safe from unauthorized access.</p>
+
+    <h2>Website Security</h2>
+    <p>Our website uses <strong>SSL encryption (Secure Socket Layer)</strong> to ensure that all information exchanged between you and our site remains confidential and secure. You can verify this by looking for the padlock icon in your browser’s address bar.</p>
+
+    <h2>Payment Protection</h2>
+    <p>All online transactions are processed through trusted and secure payment gateways. We never store your credit card or banking details on our servers. Every payment is verified and encrypted to protect your financial data.</p>
+
+    <h2>Account Safety</h2>
+    <p>We encourage customers to create strong passwords and never share them. Our system automatically locks accounts after repeated failed login attempts to prevent unauthorized access.</p>
+
+    <h2>Data Privacy</h2>
+    <p>Your personal information is collected only for order processing, delivery, and support. We do not sell or share your information with third parties without your consent. For more information, please read our 
+      <a href="{% url 'privacy' %}" style="color:#65360d;text-decoration:none;font-weight:500;">Privacy Policy</a>.</p>
+
+    <h2>How You Can Help</h2>
+    <ul>
+      <li>Always log out after using a shared computer.</li>
+      <li>Never share your login credentials.</li>
+      <li>Beware of phishing emails pretending to be from Struktura.</li>
+      <li>Contact us immediately if you notice suspicious activity on your account.</li>
+    </ul>
+
+    <p>If you have any security concerns or notice something unusual, please reach out to us at <strong>security@struktura.com</strong>.</p>
+  </main>
+
+  <footer>
+    &copy; 2025 Struktura Furniture Shop | All Rights Reserved
+  </footer>
+</body>
+</html>

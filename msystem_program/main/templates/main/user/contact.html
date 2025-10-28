@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Contact & Address | Struktura</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'main/css/user/contact.css' %}">
+</head>
+<body>
+  <header>
+    <a class="home-link" href="{% url 'home_user' %}"><i class="fa-solid fa-house home-icon"></i></a>
+    <h1>Contact & Address</h1>
+    <p>Reach out to Struktura for orders, custom requests, or general enquiries.</p>
+  </header>
+
+  <main class="wrap">
+    <!-- Left column: Address & Contact Details -->
+    <section class="card address">
+      <h3>Our Showroom & Workshop</h3>
+      <p><strong>Struktura Furniture Shop</strong></p>
+      <p>San Pablo City, Laguna, Philippines</p>
+      <div class="meta">
+        <div class="item"><i class="fa-solid fa-phone"></i><div><strong>Phone</strong><br>+63 912 345 6789</div></div>
+        <div class="item"><i class="fa-solid fa-envelope"></i><div><strong>Email</strong><br>support@struktura.com</div></div>
+        <div class="item"><i class="fa-solid fa-clock"></i><div><strong>Business Hours</strong><br>Mon–Sat: 9:00 AM – 6:00 PM<br>Sun: Closed</div></div>
+      </div>
+
+      <div class="hours">
+        <strong>How to visit</strong>
+        <p style="margin-top:8px;color:#555">We recommend scheduling a showroom visit so our design consultants can prepare samples and appointments. Call or email us to book a visit.</p>
+      </div>
+
+      <div class="map" aria-hidden="false">
+        <!-- Replace the src URL with your actual Google Maps embed link if desired -->
+        <iframe width="100%" height="100%" frameborder="0" style="border:0" 
+          src="https://www.google.com/maps?q=San%20Pablo%20City%2C%20Laguna&output=embed" allowfullscreen>
+        </iframe>
+      </div>
+
+      <div class="social" aria-label="social links">
+        <a href="#" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="#" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#" title="Pinterest"><i class="fa-brands fa-pinterest-p"></i></a>
+      </div>
+    </section>
+
+    <!-- Right column: Contact Form -->
+    <section class="card">
+      <h3>Send Us a Message</h3>
+      <p style="color:#555;margin-bottom:12px">Have a question about a product or custom order? Send us a message and we will reply within 1–2 business days.</p>
+      <form id="contactForm" action="#" method="post" onsubmit="handleSubmit(event)">
+        <label for="name" style="display:block;margin-bottom:6px;font-weight:600">Full name</label>
+        <input id="name" name="name" type="text" placeholder="Your full name" required>
+
+        <label for="email" style="display:block;margin:14px 0 6px;font-weight:600">Email address</label>
+        <input id="email" name="email" type="email" placeholder="you@example.com" required>
+
+        <label for="subject" style="display:block;margin:14px 0 6px;font-weight:600">Subject</label>
+        <input id="subject" name="subject" type="text" placeholder="Order inquiry / Custom request / Others" required>
+
+        <label for="message" style="display:block;margin:14px 0 6px;font-weight:600">Message</label>
+        <textarea id="message" name="message" placeholder="Write your message..." required></textarea>
+
+        <button class="btn" type="submit">Send Message</button>
+      </form>
+
+      <p id="formNote" style="color:#666;margin-top:12px;font-size:0.95rem">Prefer phone? Call us at <strong>+63 912 345 6789</strong>.</p>
+    </section>
+  </main>
+
+  <footer id="footer">
+    &copy; 2025 Struktura Furniture Shop | All Rights Reserved
+  </footer>
+
+  <script>
+    function handleSubmit(e){
+      e.preventDefault();
+      // Simple UI confirmation - replace with real form handling as needed
+      const name = document.getElementById('name').value || 'there';
+      alert('Thanks, ' + name + '! Your message has been sent. We will reply within 1–2 business days.');
+      document.getElementById('contactForm').reset();
+    }
+  </script>
+</body>
+</html>

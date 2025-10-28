@@ -1,0 +1,203 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-image:
+    linear-gradient(rgba(101, 54, 13, 0.62), rgba(101, 54, 13, 0.62)),
+    url("pictureneed/living-room-scandinavian-interior-design.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* ===== Header ===== */
+header {
+  position: relative;
+  background: #f4ede4;
+  padding: 36px 20px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+.home-link {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  text-decoration: none;
+}
+
+.home-icon {
+  margin-left: 2%;
+    position: absolute;
+    left: 25px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.8rem;
+    color: #65360d;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.home-icon:hover {
+  color: #f9940A;
+    cursor: pointer;
+}
+
+header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.2rem;
+  color: #65360d;
+}
+
+header p {
+  margin-top: 8px;
+  color:  #65360d;
+}
+
+/* ===== Main Layout ===== */
+.wrap {
+  width: 92%;
+  max-width: 1100px;
+  margin: 36px auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+/* ===== Card Section ===== */
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 22px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+.card h3 {
+  font-family: 'Playfair Display', serif;
+  color: #2e2e2e;
+  margin-bottom: 10px;
+}
+
+.address p {
+  margin-bottom: 8px;
+  color: #444;
+}
+
+/* ===== Contact Meta Info ===== */
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.meta .item {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  color: #444;
+}
+
+.meta .item i {
+  font-size: 1.1rem;
+  color: #8c7b6b;
+  width: 26px;
+  text-align: center;
+}
+
+/* ===== Visiting Hours Box ===== */
+.hours {
+  background: #fcfbf9;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #efe7de;
+  margin-top: 12px;
+}
+
+/* ===== Map Embed ===== */
+.map {
+  width: 100%;
+  height: 260px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 12px;
+  border: 1px solid #e9e4df;
+}
+
+/* ===== Social Links ===== */
+.social {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: #f4ede4;
+  color: #2e2e2e;
+  text-decoration: none;
+}
+
+/* ===== Form ===== */
+form input,
+form textarea,
+form select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #d6d0c7;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+form textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.btn {
+  background: #8c7b6b;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 8px;
+}
+
+.btn:hover {
+  background: #7a6b5e;
+}
+
+/* ===== Footer ===== */
+footer {
+  text-align: center;
+    padding: 20px;
+    font-size: 0.9rem;
+    color: #fff;
+    background-color: #65360d;
+    margin-top: 50px;
+    box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 800px) {
+  .wrap {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+}

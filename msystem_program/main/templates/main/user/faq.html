@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FAQs | Struktura</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'main/css/user/faq.css' %}">
+
+</head>
+<body>
+
+  <header>
+    <a href="{% url 'home_user' %}" class="home-link">
+      <i class="fa-solid fa-house home-icon"></i>
+    </a>
+    <h1>Frequently Asked Questions</h1>
+    <p>Find quick answers about our furniture, delivery, and services.</p>
+  </header>
+
+  <div class="container">
+    <div class="faq">
+      <h3>What materials do you use for your furniture?</h3>
+      <p>We use high-quality wood, metal, and upholstery materials sourced from trusted suppliers to ensure durability and comfort.</p>
+    </div>
+
+    <div class="faq">
+      <h3>Can I customize the color or size of furniture?</h3>
+      <p>Yes! Struktura offers customization for most pieces. You can request color, size, and finish adjustments depending on availability.</p>
+    </div>
+
+    <div class="faq">
+      <h3>How can I check the status of my order?</h3>
+      <p>After placing your order, you’ll receive an email confirmation. You can track your order through your Struktura account or contact our support team.</p>
+    </div>
+
+    <div class="faq">
+      <h3>Do you deliver outside Laguna?</h3>
+      <p>Yes, we offer nationwide delivery within the Philippines. Delivery fees and times may vary based on your location.</p>
+    </div>
+
+    <div class="faq">
+      <h3>What should I do if my order arrives damaged?</h3>
+      <p>Please contact us immediately with photos of the damaged item. We’ll arrange for repair, replacement, or refund depending on the issue.</p>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 Struktura Furniture Shop | All Rights Reserved
+  </footer>
+
+  <script>
+    const faqs = document.querySelectorAll('.faq');
+    faqs.forEach(faq => {
+      faq.addEventListener('click', () => {
+        faq.classList.toggle('active');
+      });
+    });
+  </script>
+
+</body>
+</html>

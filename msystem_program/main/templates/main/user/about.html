@@ -1,0 +1,93 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'main/css/user/about.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Mooli&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@100;300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>About Us</title>
+</head>
+<body>
+    <div class="main">
+
+```
+    <div class="header">
+        <input type="checkbox" id="toggler">
+        <label for="toggler" class="fas fa-bars"></label>
+
+        <img src="{% static 'media/products_images/logo1.png' %}" alt="logo" class="logo"
+            onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
+
+        <nav class="navbar">
+            <a href="{% url 'home_user' %}">Home</a>
+            <a href="{% url 'home' %}">Product</a>
+            <a href="{% url 'about' %}">About</a>
+            <a href="{% url 'home_user' %}#footer">Info Hub</a>
+        </nav>
+
+        <div class="icon">
+            <a href="{% url 'account' %}"><i class="fa-solid fa-circle-user"></i></a>
+            <i class="fa-solid fa-cart-shopping"></i>
+        </div>
+    </div>
+
+    <section id="about">
+        <div class="main2">
+            <div class="about-container">
+
+                <div class="about-text">
+                    <h1>Nice to meet you!</h1>
+                    <p>
+                        Struktura is a furniture company dedicated to designing and manufacturing high-quality, durable, and aesthetically
+                        refined furniture pieces for modern living.
+                        Our brand stands for strength, reliability, and structure — the very foundations upon which great spaces are built.<br><br>
+
+                        Founded with a passion for craftsmanship and innovation, Struktura aims to provide furniture that seamlessly combines
+                        functionality and elegance. Each piece is thoughtfully designed to enhance both comfort and style, meeting the diverse
+                        needs of homeowners, interior designers, and business clients alike.<br><br>
+
+                        At Struktura, we take pride in our meticulous attention to detail and our commitment to superior materials and construction methods.
+                        From sourcing sustainable wood and premium finishes to utilizing modern manufacturing techniques, we ensure that every product
+                        upholds the highest standards of quality and durability.<br><br>
+
+                        Our design philosophy focuses on simplicity, sophistication, and timeless appeal. We believe that well-crafted furniture
+                        should not only complement a space but also improve the way people live and interact within it.<br><br>
+
+                        Beyond creating products, Struktura strives to build lasting relationships with our clients. We value integrity, customer
+                        satisfaction, and continuous improvement — principles that guide every stage of our process, from concept to completion.<br><br>
+
+                        With a growing collection of furniture designed to fit both residential and commercial environments, Struktura continues
+                        to strengthen its reputation as a trusted name in the furniture industry.<br><br>
+
+                        <strong>Struktura</strong><br>
+                        Building spaces with purpose, precision, and pride.
+                    </p>
+                </div>
+
+                <div class="about-image">
+                    <img src="{% static 'media/pictureneed/picture-frame-by-reading-coffee-table-living-room.jpg' %}" alt="Struktura Furniture">
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <section class="container2">
+            <div class="copyright">
+                <p>© 2025 Struktura Furniture Shop. All rights reserved.</p>
+            </div>
+        </section>
+    </footer>
+
+</div>
+```
+
+</body>
+</html>

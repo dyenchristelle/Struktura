@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Help Center | Struktura</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'main/css/user/help-center.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+</head>
+<body>
+
+    <header>
+      <a href="{% url 'home_user' %}">
+        <i class="fa-solid fa-house home-icon"></i>
+      </a>
+      <h1>Help Center</h1>
+      <p>Find answers to common questions or get in touch with Struktura’s support team.</p>
+    </header>
+
+  <div class="container">
+    <!-- FAQ Section -->
+    <div class="faq">
+      <h3>How can I track my furniture order?</h3>
+      <p>Once your order is shipped, we’ll send you a tracking number via email. You can also log in to your Struktura account and check the “My Orders” section for updates.</p>
+    </div>
+
+    <div class="faq">
+      <h3>What is your return and exchange policy?</h3>
+      <p>We offer a 7-day return or exchange policy for items in original condition. Simply contact us through our support form with your order details to start the process.</p>
+    </div>
+
+    <div class="faq">
+      <h3>Do you offer custom furniture designs?</h3>
+      <p>Yes, Struktura offers made-to-order pieces tailored to your space. Our team will help you choose materials, finishes, and dimensions that suit your preferences.</p>
+    </div>
+
+    <div class="faq">
+      <h3>How long does delivery usually take?</h3>
+      <p>Delivery typically takes 5–10 business days, depending on your location and order size. Custom items may take 3–4 weeks to craft and deliver.</p>
+    </div>
+
+    <div class="faq">
+      <h3>Can I visit your showroom?</h3>
+      <p>Absolutely! You can visit our showroom in San Pablo City. Please schedule your visit in advance so our design consultants can assist you.</p>
+    </div>
+
+    <!-- Ask Section -->
+    <div class="ask-section">
+      <h2>Still have a question?</h2>
+      <p>Send us your concern and we’ll get back to you shortly.</p>
+      <form>
+        <input type="text" placeholder="Your Name" required>
+        <input type="email" placeholder="Your Email" required>
+        <textarea rows="4" placeholder="Write your question here..." required></textarea>
+        <button type="submit">Send Message</button>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 Struktura Furniture Shop | All Rights Reserved
+  </footer>
+
+  <script>
+    const faqs = document.querySelectorAll('.faq');
+    faqs.forEach(faq => {
+      faq.addEventListener('click', () => {
+        faq.classList.toggle('active');
+      });
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,157 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background-image:
+    linear-gradient(rgba(101, 54, 13, 0.62), rgba(101, 54, 13, 0.62)),
+    url("pictureneed/living-room-scandinavian-interior-design.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Header layout */
+header {
+  position: relative;
+  background-color: #fff;
+  padding: 40px 20px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  color: #65360d;
+}
+
+header p {
+  font-size: 1rem;
+  color: #65360d;
+  margin-top: 10px;
+}
+
+/* House icon styling */
+.home-icon {
+  margin-left: 2%;
+  position: absolute;
+  left: 25px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.8rem;
+  color: #65360d;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.home-icon:hover {
+  color: #f9940A;
+  cursor: pointer;
+}
+
+
+.container {
+  width: 90%;
+  max-width: 900px;
+  margin: 50px auto;
+}
+
+.faq {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.faq:hover {
+  box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+
+.faq h3 {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #222;
+}
+
+.faq p {
+  display: none;
+  margin-top: 10px;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.faq.active p {
+  display: block;
+  animation: fadeIn 0.4s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.ask-section {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  padding: 30px;
+  margin-top: 40px;
+  text-align: center;
+}
+
+.ask-section h2 {
+  font-family: 'Playfair Display', serif;
+  color: #2e2e2e;
+  margin-bottom: 15px;
+}
+
+.ask-section p {
+  color: #555;
+  font-size: 0.95rem;
+  margin-bottom: 20px;
+}
+
+.ask-section input,
+.ask-section textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.ask-section button {
+  background-color: #8c7b6b;
+  color: #fff;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.ask-section button:hover {
+  background-color: #7a6b5e;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  font-size: 0.9rem;
+  color: #fff;
+  background-color: #65360d;
+  margin-top: 50px;
+  box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.5);
+}

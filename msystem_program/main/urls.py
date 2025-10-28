@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views
+from . import views, views_user
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -20,6 +20,17 @@ urlpatterns = [
     path("customers/delete/<int:customer_id>/", views.delete_customer, name="delete_customer"),
     path("category/<str:category>/", views.category_page, name="category"),
     path('category/<str:category>/<str:subcategory>/', views.subcategory_page, name='category_sub'),
+    # user path(s)
+    path('home_user/', views_user.home_user, name="home_user"),
+    path('about/', views_user.about, name='about'),
+    path('account/', views_user.account, name='account'),
+    path('faq/', views_user.faq, name='faq'),
+    path('contact/', views_user.contact, name='contact'),
+    path('help-center/', views_user.help_center, name='help_center'),
+    path('privacy/', views_user.privacy, name='privacy'),
+    path('return/', views_user.return_page, name='return_page'),
+    path('security/', views_user.security, name='security'),
+    path('terms/', views_user.terms, name='terms'),
 ]
 
 if settings.DEBUG:
