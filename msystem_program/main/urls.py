@@ -19,7 +19,7 @@ urlpatterns = [
     path("customers/", views.customers_page, name="customers"),
     path("customers/delete/<int:customer_id>/", views.delete_customer, name="delete_customer"),
     path("category/<str:category>/", views.category_page, name="category"),
-    path('category/<str:category>/<str:subcategory>/', views.subcategory_page, name='category_sub'),
+    path('category/<str:category>/subcategory/<str:subcategory>/',views.subcategory_page,name='subcategory_page'),
     # user path(s)
     path('home_user/', views_user.home_user, name="home_user"),
     path('about/', views_user.about, name='about'),

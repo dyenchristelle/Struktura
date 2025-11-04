@@ -39,7 +39,7 @@ main {
 .category-page {
     height: 88vh; /* always full viewport */
     width: 100vw;
-    padding-top: 10px;
+    padding-top: 0px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -57,7 +57,7 @@ main {
   overflow-y: auto; /* Enables vertical scrolling */
   overflow-x: hidden;
   background: rgba(255, 255, 255, 0); /* Optional semi-transparent layer */
-  backdrop-filter: blur(5px); /* Optional glass effect */
+  /* backdrop-filter: blur(5px);  */
   padding: 20px;
 }
 
@@ -173,6 +173,7 @@ footer {
 }
 
 .products-section {
+  overflow: visible;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 15px;
@@ -183,6 +184,7 @@ footer {
   position: relative;
   z-index: 1;
   width: 100%;
+  background: inherit;
 }
 
 .product-card {
@@ -468,6 +470,7 @@ body.delete-bg {
 
 
 .title-row {
+    overflow: visible !important;
     display: flex;
     justify-content: space-between; /* left & right alignment */
     align-items: center;            /* vertically centered */
@@ -475,7 +478,7 @@ body.delete-bg {
     margin-top: 0;
     margin-bottom: 10px;
     position: relative;    /* keep in normal flow */
-    z-index: 10; 
+    z-index: 1000; 
 }
 
 
@@ -490,7 +493,19 @@ body.delete-bg {
     z-index: 2;
 }
 
-.title-row .sub { 
+.title-row a {
+    color: #faf2e1;
+    text-decoration: none;   
+    transition: all 0.2s;
+}
+
+.title-row a:hover {
+    text-decoration: underline;
+}
+
+.sub { 
+    cursor: pointer;
+    user-select: none;
     font-family: "Roboto", Helvetica, sans-serif;
     font-size: 18px;
     color: #faf2e1;
@@ -505,22 +520,74 @@ body.delete-bg {
 
 .sub:hover {
     transform: scale(1.1);
-    background-color: #674f1ca0;
+    box-shadow: 0 6px 20px rgba(255, 182, 70, 0.4);
 }
 
 /* Dropdown menu */
+.dropdown {
+  position: relative; /* Ensures the dropdown-content positions relative to this container */
+  display: inline-block; /* Keeps it aligned with h2 or text */
+  vertical-align: middle; /* Helps align with nearby elements like h2 */
+}
+
 .dropdown-content {
     display: none;
     position: absolute;
-    background-color: #3f3f3f;
-    padding: 10px;
-    border-radius: 5px;
-    z-index: 10;
+    top: 100%; /* below the button */
+    right: 0;
+    background-color: #494949b9;
+    border: 0;
+    border-radius: 6px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    min-width: 180px;
+    padding: 0;
+    z-index: 2000;
 }
 
 .dropdown-content.show {
     display: block;
 }
+
+.dropdown-content li {
+  list-style: none;
+}
+
+.dropdown-content li a,
+.dropdown-content li {
+  display: block;
+  background-color: #3f3f3f7e;
+  color: #ffffff;
+  text-decoration: none;
+  text-align: center;
+  padding: 10px;
+  border: 0.2px #292929;
+  border-radius: 6px;
+  transition: background 0.3s, transform 0.2s;
+  cursor: pointer;
+}
+
+/* Hover effect for list buttons */
+.dropdown-content li:hover {
+  background-color: #674f1c;
+  transform: scale(1.05);
+}
+
+.subcategory-page {
+    height: 88vh; /* always full viewport */
+    width: 100vw;
+    padding-top: 0px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    background:
+        linear-gradient(rgba(32, 32, 32, 0.5), rgba(33, 33, 33, 0.3)),
+        url('pics/ito.jpg') no-repeat center center fixed;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
 
 
 strong {

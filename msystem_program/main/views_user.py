@@ -17,23 +17,42 @@ def account(request):
         print("Received User Credentials:", name, email, password)
 
         # check if email already exists
-        if Customers.objects.filter(user_email=email).exists():
-            return render(request, "main/user/account.html", {
-                "error": "Email already registered!"
-            })
+        if name:
+            if Customers.objects.filter(user_email=email).exists():
+                return render(request, "main/user/account.html", {
+                    "error": "Email already registered!"
+                })
 
         # create a new customer
-        customer = Customers(
-            user_name=name,
-            user_email=email,
-            user_password=make_password(password)
-        )
-        customer.save()
-        messages.success(request, "Account created successfully! Please log in.")
-        return render(request, "main/user/account.html", {
-                "success": "true",
-                "name": name
-            })
+            customer = Customers(
+                user_name=name,
+                user_email=email,
+                user_password=make_password(password)
+            )
+            customer.save()
+            messages.success(request, "Account created successfully! Please log in.")
+            return render(request, "main/user/account.html", {
+                    "success": "true",
+                    "name": name
+                })
+        
+        else:  # Login (no name field)
+            try:
+                customer = Customers.objects.get(user_email=email)
+                if check_password(password, customer.user_password):
+                    # Password matches! Login successful
+                    messages.success(request, f"Welcome back, {customer.user_name}!")
+                    # You can redirect to a dashboard or home page here
+                    return redirect('home_user')
+                else:
+                    # Password does not match
+                    return render(request, "main/user/account.html", {
+                        "login_error": "Incorrect password!"
+                    })
+            except Customers.DoesNotExist:
+                return render(request, "main/user/account.html", {
+                    "login_error": "Email not registered!"
+                })
     
     return render(request, "main/user/account.html")
 

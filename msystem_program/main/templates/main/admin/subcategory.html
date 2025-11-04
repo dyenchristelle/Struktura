@@ -1,17 +1,25 @@
 {% extends "main/admin/layout.html" %}
 {% load static %}
+
 {% block content %}
-<main class="category-page">
+<main class="subcategory-page">
     <div class="page-layout">
+        <!-- Title Row -->
         <div class="title-row">
-            <h2> {{ category }} </h2>
+            <h2>
+                <a href="{% url 'category' category.name %}" class="breadcrumb-link">
+            {{ subcategory.category.name }}
+                </a>
+                &nbsp;&gt;&nbsp;
+                <span>{{ subcategory.name }}</span>
+            </h2>
             <div class="dropdown">
             <button class="sub"> &#9776; </button>
             <ul class="dropdown-content">
                 {% if category_tree.children %}
                     {% for sub in category_tree.children %}
                         <li>
-                            <a href="{% url 'subcategory_page' category sub.name %}">{{ sub.name }}</a>
+                            <a href="{% url 'subcategory_page' category.name sub.name %}">{{ sub.name }}</a>
                         </li>
                     {% endfor %}
                 {% else %}
@@ -20,49 +28,50 @@
             </ul>
             </div>
         </div>
+
+        <!-- Products Section -->
         <div class="products-section">
             {% for product in products %}
                 <div class="product-card">
-                    <!-- Product Image -->
                     {% if product.item_image %}
                         <img src="{{ product.item_image.url }}" alt="{{ product.item_name }}" class="product-image">
                     {% else %}
                         <img src="{% static 'main/css/admin/pics/default.jpg' %}" alt="No image" class="product-image">
-                    {% endif %} 
+                    {% endif %}
                     <strong>{{ product.item_name }}</strong>
                     <p>Quantity: {{ product.item_quantity }}</p>
                     <p>Price: ₱{{ product.item_price }}</p>
                     <p>Description: {{ product.item_description }}</p>
+
                     <a class="button" href="{% url 'update_product' product.item_id %}">Update</a>
                     <a class="button" href="{% url 'delete_product' product.item_id %}">Delete</a>
                 </div>
             {% empty %}
-                <p>No products available in this category/subcategory.</p>
+                <p>No products available in this section.</p>
             {% endfor %}
         </div>
-
     </div>
 </main>
 
-
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        const dropdownBtn = document.querySelector(".sub");
-        const dropdownContent = document.querySelector(".dropdown-content");
+        const dropdowns = document.querySelectorAll(".dropdown");
 
-        dropdownBtn.addEventListener("click", (event) => {
-            event.stopPropagation(); // Prevent the click from bubbling
-            dropdownContent.classList.toggle("show");
+        dropdowns.forEach(dropdown => {
+            const button = dropdown.querySelector(".sub");
+            const menu = dropdown.querySelector(".dropdown-content");
+
+            button.addEventListener("click", (event) => {
+                event.stopPropagation();
+                menu.classList.toggle("show");
+            });
         });
 
-        // Close dropdown when clicking outside
-        document.addEventListener("click", (event) => {
-            // Only close if click is outside the title row
-            if (!event.target.closest(".title-row")) {
-                dropdownContent.classList.remove("show");
-            }
+        document.addEventListener("click", () => {
+            document.querySelectorAll(".dropdown-content.show").forEach(menu => {
+                menu.classList.remove("show");
+            });
         });
     });
 </script>
-
 {% endblock %}

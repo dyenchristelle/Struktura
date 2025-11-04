@@ -8,13 +8,6 @@ from functools import wraps
 
 # last edit: 10/24/25
 
-class TreeNode:
-    def __init__(self, name, obj=None):
-        self.name = name     # category, subcategory, or product name
-        self.obj = obj       # store model object
-        self.children = []   # list of child TreeNode
-
-
 
 def admin_login(request):
     error = None
@@ -77,7 +70,7 @@ def add_product(request):
         price = request.POST.get("product_price")
         description = request.POST.get("product_description")
         category_id = request.POST["category_name"]
-        subcategory = request.POST.get("subcategory_id")
+        subcategory = request.POST["subcategory_id"]
         image = request.FILES.get("product_image")
         print("Received POST data:", name, quantity, price, category_id, subcategory, image, description)
 
@@ -145,6 +138,13 @@ def delete_customer(request, customer_id):
         return redirect("customers")
     return render(request, "main/admin/delete_customer.html", {"customer": customer})
 
+
+class TreeNode:
+    def __init__(self, name, obj=None):
+        self.name = name     # category, subcategory, or product name
+        self.obj = obj       # store model object
+        self.children = []   # list of child TreeNode
+
 # ===== CATEGORY PAGE =====
 @login_required_custom
 def category_page(request, category):
@@ -187,9 +187,9 @@ def subcategory_page(request, category, subcategory):
             sub_node.children.append(prod_node)
         root_node.children.append(sub_node)
 
-    return render(request, "main/admin/category.html", {
+    return render(request, "main/admin/subcategory.html", {
         "category_tree": root_node, 
-        "category": category,
-        "subcategory": subcategory,
-        "products_furniture": products,
+        "category": category_obj,     
+        "subcategory": SubCategory.objects.get(name=subcategory, category=category_obj),
+        "products": products,
     })
