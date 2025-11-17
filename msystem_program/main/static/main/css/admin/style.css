@@ -150,7 +150,7 @@ footer {
     margin-bottom: 30px;
 }
 
-.search-form input[type="text"] {
+/* .search-form input[type="text"] {
     padding: 8px 12px;
     border-radius: 6px;
     border: none;
@@ -170,7 +170,7 @@ footer {
 
 .search-form input[type="submit"]:hover {
     background-color: #854d1a;
-}
+} */
 
 .products-section {
   overflow: visible;
@@ -245,6 +245,7 @@ footer {
     margin-bottom: 150px;
     margin-left: 20px; /* para may kaunting layo sa gilid */
     margin-right: 1000px;
+    position: sticky;
 }
 
 .search-form input[type="text"] {
@@ -479,6 +480,7 @@ body.delete-bg {
     margin-bottom: 10px;
     position: relative;    /* keep in normal flow */
     z-index: 1000; 
+    gap: 900px;
 }
 
 
@@ -535,7 +537,7 @@ body.delete-bg {
     position: absolute;
     top: 100%; /* below the button */
     right: 0;
-    background-color: #494949b9;
+    background-color: #494949;
     border: 0;
     border-radius: 6px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
@@ -693,7 +695,7 @@ a.button {
 /* ===== Category Grid ===== */
 .category-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     gap: 5px;
     justify-items: center;
 }
@@ -904,4 +906,124 @@ a.button {
     object-fit: cover;
     border-radius: 5px;
     margin-bottom: 10px;
+}
+
+
+/* search bar */
+.search-bar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0;  /* no spacing between input and button */
+}
+
+.search {
+    display: flex;
+    flex-direction: column; /* button sa ilalim ng input */
+    align-items: flex-start; /* ilagay sa kaliwa */
+    gap: 1px;
+    /* margin-top: 15px; */
+    margin-bottom: 15px;
+    margin-left: 20px; /* para may kaunting layo sa gilid */
+    margin-right: 1000px;
+    position: sticky;
+}
+
+.search-form input[type="text"] {
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: none;
+    width: 250px;
+    background-color: #fff;
+}
+
+.search input[type="submit"] {
+    background-color: #65360d9e;
+    color: white;
+    border: none;
+    width: 250px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.search input[type="submit"]:hover {
+    background-color: #e0a85f;
+}
+
+
+/* SEARCH RESULT */
+.search-results-page {
+    height: 88vh; /* always full viewport */
+    width: 100vw;
+    padding-top: 0px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    background:
+        linear-gradient(rgba(32, 32, 32, 0.5), rgba(33, 33, 33, 0.3)),
+        url('pics/ito.jpg') no-repeat center center fixed;
+    background-size: cover;
+    background-attachment: fixed;
+}
+.search-results {
+  height: 75vh; 
+  overflow-y: auto; /* Enables vertical scrolling */
+  overflow-x: hidden;
+  background: rgba(255, 255, 255, 0); /* Optional semi-transparent layer */
+  padding: 10px;
+}
+
+.search-results::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+}
+
+.search h5 {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0); 
+    padding: 0;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #fac67e;
+}
+
+/* CUSTOMERS PAGE */
+.customer-page {
+    height: 88vh; /* always full viewport */
+    width: 100vw;
+    padding-top: 0px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    background:
+        linear-gradient(rgba(32, 32, 32, 0.5), rgba(33, 33, 33, 0.3)),
+        url('pics/ito.jpg') no-repeat center center fixed;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+.customer-page h6 {
+    font-size: 30px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    color: #fac67e;
+    margin-bottom: 20px;
+    padding-left: 15px;
+}
+
+/* DESCRIPTION */
+.desc {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    max-width: 100%; /* ensures ellipsis works properly */
 }

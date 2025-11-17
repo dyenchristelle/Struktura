@@ -1,9 +1,8 @@
 {% extends "main/admin/layout.html" %}
 {% load static %}
 {% block content %}
-<main class="category-page">
-    <div class="page-layout">
-        <div class="title-row">
+<main class="category-page">]
+    <div class="title-row">
             <h2> {{ category }} </h2>
             <div class="dropdown">
             <button class="sub"> &#9776; </button>
@@ -20,10 +19,10 @@
             </ul>
             </div>
         </div>
+    <div class="page-layout">
         <div class="products-section">
             {% for product in products %}
                 <div class="product-card">
-                    <!-- Product Image -->
                     {% if product.item_image %}
                         <img src="{{ product.item_image.url }}" alt="{{ product.item_name }}" class="product-image">
                     {% else %}
@@ -32,7 +31,7 @@
                     <strong>{{ product.item_name }}</strong>
                     <p>Quantity: {{ product.item_quantity }}</p>
                     <p>Price: ₱{{ product.item_price }}</p>
-                    <p>Description: {{ product.item_description }}</p>
+                    <p class="desc">Description: {{ product.item_description }}</p>
                     <a class="button" href="{% url 'update_product' product.item_id %}">Update</a>
                     <a class="button" href="{% url 'delete_product' product.item_id %}">Delete</a>
                 </div>

@@ -1,17 +1,20 @@
 {% extends "main/admin/layout.html" %}
 
 {% block content %}
-<h2>Customers</h2>
+<main class="customer-page">
+    <h6>Customers</h6>
 
-<div class="list">
-    {% for customer in customers %}
-        <div class="list-item">
-            <strong>{{ customers.user_name }}</strong>
-            <p>Email: {{ customers.user_email }}</p>
+    <div class="customer">
+        {% for customer in customers %}
+            <div class="customer-list">
+                <strong>Name: {{ customer.user_name }}</strong>
+                <p>Email: {{ customer.user_email }}</p>
+                <!-- <p>Address: {{ customer.user_adress }}</p> -->
 
-        </div>
-    {% empty %}
-        <p>No customers found.</p>
-    {% endfor %}
-</div>
+            </div>
+        {% empty %}
+            <p>No customers found.</p>
+        {% endfor %}
+    </div>
+</main>
 {% endblock %}

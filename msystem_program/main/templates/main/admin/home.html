@@ -4,7 +4,7 @@
 <section class="home-section">
 
     <!-- Search Form -->
-    <form method="GET" action="{% url 'home' %}" class="search-form">
+    <form method="GET" action="{% url 'search' %}" class="search-form">
         {% csrf_token %}
         <input 
             type="text" 
@@ -19,6 +19,7 @@
     <div class="add-product-link">
         <a class="button" href="{% url 'add_product' %}">+ Add New Product</a>
     </div>
+
 
     <!-- Category Section -->
     <div class="category-section">

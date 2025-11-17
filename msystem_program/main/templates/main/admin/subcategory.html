@@ -3,9 +3,7 @@
 
 {% block content %}
 <main class="subcategory-page">
-    <div class="page-layout">
-        <!-- Title Row -->
-        <div class="title-row">
+    <div class="title-row">
             <h2>
                 <a href="{% url 'category' category.name %}" class="breadcrumb-link">
             {{ subcategory.category.name }}
@@ -28,7 +26,7 @@
             </ul>
             </div>
         </div>
-
+    <div class="page-layout">
         <!-- Products Section -->
         <div class="products-section">
             {% for product in products %}
@@ -41,7 +39,7 @@
                     <strong>{{ product.item_name }}</strong>
                     <p>Quantity: {{ product.item_quantity }}</p>
                     <p>Price: ₱{{ product.item_price }}</p>
-                    <p>Description: {{ product.item_description }}</p>
+                    <p class="desc">Description: {{ product.item_description }}</p>
 
                     <a class="button" href="{% url 'update_product' product.item_id %}">Update</a>
                     <a class="button" href="{% url 'delete_product' product.item_id %}">Delete</a>

@@ -1,0 +1,48 @@
+{% extends "main/admin/layout.html" %}
+{% load static %}
+
+{% block content %}
+<main class="search-results-page">
+    <div class="search-bar">
+        <form method="GET" action="{% url 'search' %}" class="search">
+            {% csrf_token %}
+            <input 
+                type="text" 
+                name="search" 
+                placeholder="Search furniture..." 
+                value="{{ search_query }}"
+            >
+            <input type="submit" value="Search">
+            <h5>Search Results for “{{ search_query }}”</h5>
+        </form>
+    </div>
+
+    <!-- Search Results -->
+    <div class="search-results">
+        
+
+        <div class="products-section">
+            {% for product in products %}
+                <div class="product-card">
+                    {% if product.item_image %}
+                        <img src="{{ product.item_image.url }}" alt="{{ product.item_name }}" class="product-image">
+                    {% else %}
+                        <img src="{% static 'main/css/admin/pics/default.jpg' %}" alt="No image" class="product-image">
+                    {% endif %}
+
+                    <strong>{{ product.item_name }}</strong>
+                    <p>Quantity: {{ product.item_quantity }}</p>
+                    <p>Price: ₱{{ product.item_price }}</p>
+                    <p class="desc">Description: {{ product.item_description }}</p>
+
+                    <a class="button" href="{% url 'update_product' product.item_id %}">Update</a>
+                    <a class="button" href="{% url 'delete_product' product.item_id %}">Delete</a>
+                </div>
+            {% empty %}
+                <p class="no-results">No products found for “{{ search_query }}”.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+</main>
+{% endblock %}

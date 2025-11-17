@@ -5,6 +5,7 @@ from .models import Products, Customers, Category, SubCategory
 from decimal import Decimal
 from django.contrib.auth.models import User
 from functools import wraps
+from django.db.models import Q
 
 # last edit: 10/24/25
 
@@ -51,12 +52,36 @@ def logout_user(request):
 #  HOMEPAGE
 def home_page(request):
     categories = Category.objects.all()
-    return render(request, 'main/admin/home.html', {'categories': categories})
+
+    search_query = request.GET.get("search", "")
+    products = None
+
+    if search_query:
+        products = Products.objects.filter(
+            Q(item_name__icontains=search_query) | 
+            Q(item_description__icontains=search_query)
+        ).order_by('item_name')  # sort by name
+    else:
+        products = None  # default when no search yet
+
+    context = {
+        'categories': categories,
+        'products': products,
+        'search_query': search_query,
+    }
+
+    return render(request, 'main/admin/home.html', context)
 
 # SEARCH
 def search_view(request):
-    search_query = request.GET.get('search', '') 
-    return render(request, 'main/admin/home.html', {'search_query': search_query})
+    search_query = request.GET.get('search', '')
+
+    if search_query:
+        products = Products.objects.filter(item_name__icontains=search_query)
+    else:
+        products = Products.objects.none()   
+
+    return render(request, 'main/admin/search.html', {'search_query': search_query,'products': products})
 
 
 
@@ -95,8 +120,6 @@ def add_product(request):
         except Exception as e:
             print("Error adding product.", repr(e))
             return render(request, "main/admin/home.html", {"error": f"Could not add product: {e}"})
-    
-        # return redirect("products")
     
     return render(request, "main/admin/add_product.html")
 
