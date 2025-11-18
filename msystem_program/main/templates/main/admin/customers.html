@@ -4,16 +4,48 @@
 <main class="customer-page">
     <h6>Customers</h6>
 
-    <div class="customer">
+<div class="customer-container">
         {% for customer in customers %}
-            <div class="customer-list">
+        <div class="customer-row">
+            <!-- Left Column: Customer Details -->
+            <div class="customer-info">
                 <strong>Name: {{ customer.user_name }}</strong>
                 <p>Email: {{ customer.user_email }}</p>
-                <!-- <p>Address: {{ customer.user_adress }}</p> -->
-
+                <p>Address: {{ customer.user_adress }}</p>
             </div>
+
+            <!-- Right Column: Transaction Details -->
+            <div class="customer-transactions">
+                {% if customer.transactions.exists %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Total Price</th>
+                            <th>Payment Mode</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tx in customer.transactions.all %}
+                        <tr>
+                            <td>{{ tx.product_name }}</td>
+                            <td>{{ tx.quantity }}</td>
+                            <td>{{ tx.total_price }}</td>
+                            <td>{{ tx.payment_mode }}</td>
+                            <td>{{ tx.date|date:"M d, Y" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p>No transactions found.</p>
+                {% endif %}
+            </div>
+        </div>
         {% empty %}
-            <p>No customers found.</p>
+        <p>No customers found.</p>
         {% endfor %}
     </div>
 </main>

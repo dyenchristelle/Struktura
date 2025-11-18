@@ -192,8 +192,9 @@ footer {
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
   width: 280px;
+  height: 470px; 
   text-align: center;
-  padding: 50px;
+  padding: 30px;
   transition: 0.3s;
   justify-content: flex-start;
 }
@@ -371,7 +372,7 @@ body.add-bg, body.update-bg {
 }
 
 .button:hover {
-    background-color: #65360d9e;
+    background-color: #cd701f9e;
     transform: scale(1.05);
 }
 
@@ -600,7 +601,7 @@ strong {
     font-size: 25px;
     display: block;
     margin-bottom: 5px;
-    margin-top: 30px; 
+    margin-top: 10px; 
 }
 
 p {
@@ -905,7 +906,6 @@ a.button {
     max-height: 200px;
     object-fit: cover;
     border-radius: 5px;
-    margin-bottom: 10px;
 }
 
 
@@ -1026,4 +1026,47 @@ a.button {
     text-overflow: ellipsis;
     display: block;
     max-width: 100%; /* ensures ellipsis works properly */
+}
+
+
+/* CUSTOMER'S PAGE */
+.customer-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 1200px;  /* adjust overall width */
+    margin: 0 auto; 
+}
+
+.customer-row {
+    display: flex;
+    gap: 30px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.customer-info {
+    flex: 1; /* left column */
+}
+
+.customer-transactions {
+    flex: 2; /* right column */
+    overflow-x: auto; /* scroll if table too wide */
+}
+
+.customer-transactions table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.customer-transactions th,
+.customer-transactions td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+
+.customer-transactions th {
+    background-color: #f0f0f0;
 }

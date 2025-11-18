@@ -4,7 +4,12 @@ from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
 
 def home_user(request):
-    return render(request, "main/user/home.html")
+    categories = Category.objects.all()
+
+    context = {
+        'categories': categories,
+    }
+    return render(request, "main/user/home.html", context)
 
 def about(request):
     return render(request, "main/user/about.html")
@@ -76,3 +81,56 @@ def security(request):
 
 def terms(request):
     return render(request, "main/user/terms.html")
+
+class TreeNode:
+    def __init__(self, name, obj=None):
+        self.name = name     # category, subcategory, or product name
+        self.obj = obj       # store model object
+        self.children = []   # list of child TreeNode
+
+# ===== CATEGORY PAGE =====
+def category_page(request, category):
+    products = Products.objects.filter(item_category__name=category)
+
+    category_obj = Category.objects.get(name=category)
+    root_node = TreeNode(category_obj.name, obj=category_obj)
+
+    subcategories = SubCategory.objects.filter(category=category_obj)
+    for sub in subcategories:
+        sub_node = TreeNode(sub.name, obj=sub)
+        products_in_sub = Products.objects.filter(item_category=category_obj, subcategory=sub)
+        for prod in products_in_sub:
+            prod_node = TreeNode(prod.item_name, obj=prod)
+            sub_node.children.append(prod_node)
+        root_node.children.append(sub_node)
+
+    return render(request, "main/admin/category.html", {
+        "category": category,
+        "products": products,
+        "category_tree": root_node,
+    })
+
+# ==== SUBCATEGORY ====
+def subcategory_page(request, category, subcategory):
+    products = Products.objects.filter(
+        item_category__name=category, subcategory__name__iexact=subcategory
+    )
+
+    category_obj = Category.objects.get(name=category)
+    root_node = TreeNode(category_obj.name, obj=category_obj)
+
+    subcategories = SubCategory.objects.filter(category=category_obj)
+    for sub in subcategories:
+        sub_node = TreeNode(sub.name, obj=sub)
+        products_in_sub = Products.objects.filter(item_category=category_obj, subcategory=sub)
+        for prod in products_in_sub:
+            prod_node = TreeNode(prod.item_name, obj=prod)
+            sub_node.children.append(prod_node)
+        root_node.children.append(sub_node)
+
+    return render(request, "main/admin/subcategory.html", {
+        "category_tree": root_node, 
+        "category": category_obj,     
+        "subcategory": SubCategory.objects.get(name=subcategory, category=category_obj),
+        "products": products,
+    })

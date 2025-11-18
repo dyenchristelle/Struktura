@@ -7,9 +7,6 @@ from django.contrib.auth.models import User
 from functools import wraps
 from django.db.models import Q
 
-# last edit: 10/24/25
-
-
 def admin_login(request):
     error = None
     if request.method == "POST":
@@ -46,7 +43,7 @@ def login_required_custom(view_func):
 # LOGOUT
 @login_required_custom
 def logout_user(request):
-    request.session.flush()
+    logout(request)
     return redirect("login")
 
 #  HOMEPAGE

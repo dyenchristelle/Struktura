@@ -21,7 +21,7 @@
                 <input type="checkbox" name="" id="toggler">
                 <label for="toggler" class="fas fa-bars"></label>
 
-                <img src="pictureneed/logo1.png" alt="logo" class="logo" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
+                <img src="{% static 'main/css/user/pictureneed/logo1.png' %}" alt="logo" class="logo" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
 
                 <nav class="navbar">
                     <a href="{% url 'home_user' %}">Home</a>
@@ -46,39 +46,30 @@
             </div>
 
             <div class="ellipse">
-
                 <div class="items">
-                    <img src="{% static 'media/pictureneed/kitchen.jpg' %}" alt="kitchen">
-                    <p>Kitchen</p>
-                </div>
-
-                <div>
-                    <img src="{% static 'media/pictureneed/bed.png' %}" alt="bed">
-                    <p>Bed</p>
-                </div>
-
-                <div>
-                    <img src="{% static 'media/pictureneed/chair.jpg' %}" alt="chair">
-                    <p>Chair</p>
-                </div>
-
-                <div>
-                    <img src="{% static 'media/pictureneed/livingroom.jpg' %}" alt="livingroom">
-                    <p>Living Room</p>
-                </div>
-
-                <div>
-                    <img src="{% static 'media/pictureneed/table.jpg' %}" alt="table">
-                    <p>Table</p>
+                    {% for category in categories %}
+                        <a href="{% url 'category' category.name %}" class="category">
+                            {% if category.image %}
+                                <img src="{{ category.image.url }}" alt="{{ category.name }}">
+                            {% else %}
+                                <img src="{% static 'products_images/default.jpg' %}" alt="{{ category.name }}">
+                            {% endif %}
+                            <p>{{ category.name|upper }}</p>
+                        </a>
+                    {% empty %}
+                        <p>No categories available</p>
+                    {% endfor %}
                 </div>
             </div>
             </section>
+
 
             <section>
                 <div class="bluebox">
                     <h2>Transform Your Home <br> with Furniture</h2>
                 </div>
             </section>
+
 
             <section>
                 <div class="best">
@@ -88,42 +79,42 @@
                 <div class="container">
 
                     <div class="box">
-                        <img src="{% static 'media/pictureneed/Aurora Rattan Chair .jpeg' %}" alt="rchair">
+                        <img src="{% static 'main/css/user/pictureneed/Aurora Rattan Chair .jpeg' %}" alt="rchair">
                         <p class="item_name">Aurora Rattan Chair</p>
                         <p class="star">★★★★★</p>
                         <p class="price">₱4,999</p>
                     </div>
 
                     <div class="box">
-                        <img src="{% static 'media/pictureneed/Grains 6-Seater Dining Set (White-Beige) .jpg' %}" alt="diningset">
+                        <img src="{% static 'main/css/user/pictureneed/Grains 6-Seater Dining Set (White-Beige) .jpg' %}" alt="diningset">
                         <p class="item_name">Grains 6-Seater Dining Set</p>
                         <p class="star">★★★★★</p>
                         <p class="price">₱16,990</p>
                     </div>
 
                     <div class="box">
-                        <img src="{% static 'media/pictureneed/Jeager Dining Table 180cm (Walnut) .jpg' %}" alt="jeagerdining">
+                        <img src="{% static 'main/css/user/pictureneed/Jeager Dining Table 180cm (Walnut) .jpg' %}" alt="jeagerdining">
                         <p class="item_name">Jeager Dining Table 240cm</p>
                         <p class="star">★★★★★</p>
                         <p class="price">₱21,990</p>
                     </div>
 
                     <div class="box">
-                        <img src="{% static 'media/pictureneed/Michell Wood Dining Set (Walnut) .jpg' %}" alt="wooddining">
+                        <img src="{% static 'main/css/user/pictureneed/Michell Wood Dining Set (Walnut) .jpg' %}" alt="wooddining">
                         <p class="item_name">Michell Wood Dining Set</p>
                         <p class="star">★★★★★</p>
                         <p class="price">₱14,990</p>
                     </div>
 
                     <div class="box">
-                        <img src="{% static 'media/pictureneed/VALERIE-METAL-WIDE-SINGLE-BED.jpg' %}" alt="singlebed">
+                        <img src="{% static 'main/css/user/pictureneed/VALERIE-METAL-WIDE-SINGLE-BED.jpg' %}" alt="singlebed">
                         <p class="item_name">Valerie Metal Wide Single Bed</p>
                         <p class="star">★★★★★</p>
                         <p class="price">₱10,995</p>
                     </div>
 
                     <div class="box">
-                        <img src="{% static 'media/pictureneed/Viko Chest of 6 Drawers 120cm (White) .jpg' %}" alt="drawer">
+                        <img src="{% static 'main/css/user/pictureneed/Viko Chest of 6 Drawers 120cm (White) .jpg' %}" alt="drawer">
                         <p class="item_name">Viko Chest of 6 Drawers</p>
                         <p class="star">★★★★★</p>
                         <p class="price">₱8,990</p>
@@ -140,7 +131,7 @@
             </section>
 
             <section class="about">
-                    <div class="chair"><img src="{% static 'media/pictureneed/chairr.jpg' %}" alt="chair"></div>
+                    <div class="chair"><img src="{% static 'main/css/user/pictureneed/chairr.jpg' %}" alt="chair"></div>
                     <h3 class="sentence">Struktura Furniture Shop is dedicated to <br>
                         crafting high-quality, stylish, and durable  <br>
                         pieces that bring both elegance and <br>
@@ -152,7 +143,7 @@
 
             <section>
                 <div class="logoimg">
-                    <img src="{% static 'media/pictureneed/logo1.png' %}" alt="logo">
+                    <img src="{% static 'main/css/user/pictureneed/logo1.png' %}" alt="logo">
                 </div>
             </section>
 
@@ -197,9 +188,6 @@
                 </div>
             </section>
         </footer>
-
-               
     </div>
-        
 </body>
 </html> 
