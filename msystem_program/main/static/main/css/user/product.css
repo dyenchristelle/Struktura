@@ -1,0 +1,363 @@
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Lato', sans-serif;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
+    url("pictureneed/living-room-scandinavian-interior-design.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* ======= HEADER ======= */
+.header {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  padding: 20px 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  z-index: 1000;
+  box-shadow: 0px 4px 4px #4B2605;
+}
+
+.header .logo {
+  height: 75px;
+  width: auto;
+  mix-blend-mode: multiply;
+  cursor: pointer;
+}
+
+/* navbar links */
+.header .navbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.header .navbar a {
+  font-size: 1.5rem;
+  color: #65360d;
+  text-decoration: none;
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-weight: 700;
+  transition: all 0.2s ease-in-out;
+}
+
+.header .navbar a:hover {
+  color: #f9940A;
+  transform: scale(1.05);
+}
+
+/* Container of the search bar */
+.search-bar {
+    display: inline-block;  
+    position: relative;        
+    margin-left: 20px;           
+}
+
+/* Input field itself */
+.search-bar input {
+    width: 250px;               
+    padding: 8px 12px;          
+    border: 2px solid #ccc;      
+    border-radius: 25px;        
+    font-size: 16px;            
+    outline: none;              
+    transition: all 0.3s ease; 
+}
+
+/* Focus state for nicer appearance */
+.search-bar input:focus {
+    border-color: #f9940A;       
+    box-shadow: 0 0 5px rgba(0,0,0,0.2); 
+}
+
+/* Placeholder text style */
+.search-bar input::placeholder {
+    color: #888;             
+    font-style: italic;
+}
+
+
+/* icons */
+.header .icon i {
+  font-size: 2rem;
+  color: #65360d;
+  margin-left: 1.5rem;
+  cursor: pointer;
+  transition: color 0.2s ease-in-out;
+}
+
+.header .icon i:hover {
+  color: #f9940A;
+}
+
+.header #toggler {
+  display: none;
+}
+
+.header .fa-bars {
+  font-size: 2rem;
+  color: #65360d;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border: 0.1rem solid rgba(0, 0, 0, 0.3);
+  display: none;
+}
+
+/*item container*/
+.Item_container {
+  width: 300px;            
+  height: 400px;          
+  background-color: #ffffff; 
+  border-radius: 10px;     
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+  text-align: center;       
+  font-family: 'Mooli', sans-serif;
+  padding: 20px;           
+  margin: 20px;             
+  display: inline-block;    
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.Item_container:hover {
+  transform: scale(1.02); 
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+/* CAROUSEL*/
+.carousel {
+  margin-top: 1%;
+  margin-left: auto;
+  margin-right: auto;
+  width: 1400px;    
+  height: 500px;   
+  position: relative;
+  overflow: hidden;
+  border-radius: 3%;
+}
+
+/* Make slides absolute and only show active one */
+.display {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.display img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;    
+  display: block;
+}
+
+/* Brown transparent overlay */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(75, 38, 5, 0.5);
+  pointer-events: none;
+}
+
+.display.active {
+  opacity: 1;
+}
+
+/* Arrows */
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2rem;
+  color: white;
+  cursor: pointer;
+  z-index: 3;
+  padding: 10px;
+}
+
+.arrow.left {
+  left: 20px;
+}
+
+.arrow.right {
+  right: 20px;
+}
+
+
+/* Text on top of image */
+.text {
+  position: absolute;
+  top: 40%;          /* vertical placement */
+  left: 10%;          /* how far from the left side */
+  transform: translateY(-50%); /* only center vertically */
+  color: white;
+  font-size: 3rem;
+  font-weight: bold;
+  text-align: left;
+  z-index: 2;
+}
+
+.text h1 {
+  font-size: 6rem;
+  margin: 0;
+  font-weight: bold;
+  font-family: 'Mooli', sans-serif;
+}
+
+/*CATEGORY*/
+.category {
+  margin-top: 2%;
+  text-align: center; 
+  padding: 2vh 0;     
+  font-family: 'Mooli', sans-serif;
+}
+
+.category h2 {
+  font-size: 1.7rem;
+  color: #65360d;
+  margin: 0 auto;
+}
+
+.ellipse .items {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 0;
+    justify-items: center;
+    padding: 20px;
+}
+
+.ellipse .items a {
+    text-decoration: none;
+    color: inherit;
+    text-align: center;
+}
+
+.ellipse .items img {
+  width: min(25vw, 135px);
+  aspect-ratio: 1 / 1; 
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 4px 8px #d48642;
+  transition: transform 0.3s ease;
+}
+
+.ellipse img:hover {
+  transform: scale(1.05);
+}
+
+.ellipse p {
+  margin-top: 0.6rem;
+  font-size: clamp(0.8rem, 1.5vw, 1rem);
+  color: #65360d;
+  font-family: 'Mooli', sans-serif;
+  font-weight: 500;
+}
+
+.separate {
+  text-align: center; 
+  padding: 2vh 0;
+  background: rgba(113, 60, 14, 0.5);
+  height: 50px;
+   box-shadow: 0 -2px 0 #65360d,   /* top line */
+              0 2px 0 #65360d;
+}
+
+/* ======= FOOTER ======= */
+footer .container2 {
+  background-color: #4B2605;
+  margin-bottom: 0;
+  padding: 5px 5px;
+  box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.5);
+}
+
+.copyright {
+  text-align: center;
+  color: #ffffff;
+  font-size: 15px;
+}
+
+
+
+
+/* ======= BEST ITEM =======
+.best {
+  text-align: center; 
+  padding: 2vh 0;     
+  background-color: #ffffff;
+  font-family: 'Mooli', sans-serif;
+}
+
+.best h2 {
+  font-size: 1.7rem;
+  color: #65360d;
+  margin: 0 auto;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  justify-items: center;
+  margin-top: 3%;
+  margin-left: 5%;
+  margin-right: 5%;
+}
+
+.box {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  width: 280px;
+  text-align: center;
+  padding: 50px;
+  transition: 0.3s;
+}
+
+.box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.box img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.item_name {
+  font-size: 17px;
+  font-weight: 500;
+  margin: 15px 0 10px 0;
+  font-family: 'Mooli', sans-serif;
+}
+
+.star {
+  color: gold;
+  margin-bottom: 15px;
+  font-size: 17px;
+}
+
+.price {
+  font-size: 15px;
+  font-weight: bold;
+  color: #333;
+} */

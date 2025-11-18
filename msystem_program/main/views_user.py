@@ -82,6 +82,20 @@ def security(request):
 def terms(request):
     return render(request, "main/user/terms.html")
 
+
+# ==== PRODUCTS PAGE ====
+def product_page(request):
+    categories = Category.objects.all()
+    products = Products.objects.all()
+
+    context = {
+        'categories': categories,
+        'products': products,
+    }
+    return render(request, "main/user/product.html", context)
+
+
+
 class TreeNode:
     def __init__(self, name, obj=None):
         self.name = name     # category, subcategory, or product name

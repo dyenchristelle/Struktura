@@ -23,6 +23,7 @@ urlpatterns = [
     path('category/<str:category>/subcategory/<str:subcategory>/',views.subcategory_page,name='subcategory_page'),
     # user path(s)
     path('home_user/', views_user.home_user, name="home_user"),
+    path('products/', views_user.product_page, name="products"),
     path('about/', views_user.about, name='about'),
     path('account/', views_user.account, name='account'),
     path('faq/', views_user.faq, name='faq'),

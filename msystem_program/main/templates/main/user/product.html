@@ -1,0 +1,221 @@
+{% load static %}]
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'main/css/user/categories.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/user/product.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/user/try.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/user/modal.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Mooli&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@100;300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <title>Furniture</title>
+    
+</head>
+
+<!-- Product Modal -->
+<div id="product-modal" class="product-modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        
+        <div class="modal-body">
+            <div class="modal-image">
+                <img id="modal-img" src="" alt="Product Image">
+            </div>
+            
+            <div class="modal-details">
+                <h2 id="modal-name">Product Name</h2>
+                <p id="modal-price" class="modal-price">₱0.00</p>
+                <p id="modal-description" class="modal-description">Product description will appear here.</p>
+                
+                <div class="quantity-selector">
+                    <label for="quantity">Quantity:</label>
+                    <div class="quantity-controls">
+                        <button class="quantity-btn minus">-</button>
+                        <input type="number" id="quantity" value="1" min="1">
+                        <button class="quantity-btn plus">+</button>
+                    </div>
+                </div>
+                
+                <div class="modal-actions">
+                    <button class="add-to-cart-modal">Add to Cart</button>
+                    <button class="buy-now">Buy Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-overlay" class="modal-overlay"></div>
+
+
+<body>
+  <div class="main">
+
+    <div class="header">
+      <input type="checkbox" name="" id="toggler">
+      <label for="toggler" class="fas fa-bars"></label>
+
+      <img src="{% static 'main/css/user/pictureneed/logo1.png' %}" alt="logo" class="logo"
+        onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
+
+      <nav class="navbar">
+        <a href="{% url 'home_user' %}">Home</a>
+        <a href="{% url 'products' %}" id="all-products-link">Product</a>
+        <a href="{% url 'about' %}">About</a>
+        <a href="home.html#footer">Info Hub</a>
+
+        <div class="search-bar">
+          <input type="text" placeholder="Search products...">
+        </div>
+      </nav>
+
+      <div class="icon">
+        <a href="{% url 'account' %}"><i class="fa-solid fa-circle-user"></i></a>
+        <i class="fa-solid fa-cart-shopping"></i>
+      </div>
+    </div>
+
+
+  <section>
+    <div class="carousel">
+
+      <!-- Slide 1 -->
+      <div class="display active">
+        <img src="{% static 'main/css/user/pictureneed/display1.jpg' %}" alt="display1">
+        <div class="overlay"></div>
+        <div class="text">
+          <h1>Struktura</h1>
+          Building beautiful places <br> Inspired by life, built for living.
+        </div>
+      </div>
+
+      <!-- Slide 2 -->
+      <div class="display">
+        <img src="{% static 'main/css/user/pictureneed/display2.jpg' %}" alt="display2">
+        <div class="overlay"></div>
+        <div class="text">Transform your space with style <br> enjoy 5% OFF at <br> Struktura</div>
+      </div>
+
+      <!-- Slide 3 -->
+      <div class="display">
+        <img src="{% static 'main/css/user/pictureneed/display3.jpg' %}" alt="display3">
+        <div class="overlay"></div>
+        <div class="text">Upgrade your space <br> with elegance <br> 5% OFF today!</div>
+      </div>
+
+      <!-- Slide 4 -->
+      <div class="display">
+        <img src="{% static 'main/css/user/pictureneed/display4.jpg' %}" alt="display4">
+        <div class="overlay"></div>
+        <div class="text">Quality meets affordability <br> Struktura Furniture <br> Shop now!</div>
+      </div>
+
+      <!-- Arrows -->
+      <div class="arrow left" id="prev">&#10094;</div>
+      <div class="arrow right" id="next">&#10095;</div>
+
+    </div>
+  </section>
+
+  <section>
+    <div class="category">
+      <h2>Product Categories</h2>
+            <div class="ellipse">
+                <div class="items">
+                    {% for category in categories %}
+                        <a href="{% url 'category' category.name %}" class="category">
+                            {% if category.image %}
+                                <img src="{{ category.image.url }}" alt="{{ category.name }}">
+                            {% else %}
+                                <img src="{% static 'products_images/default.jpg' %}" alt="{{ category.name }}">
+                            {% endif %}
+                            <p>{{ category.name|upper }}</p>
+                        </a>
+                    {% empty %}
+                        <p>No categories available</p>
+                    {% endfor %}
+                </div>
+            </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="separate"></div>
+  </section>
+
+<section>
+    <div class="ItemsWrapper">
+        {% for product in products %}
+        <div class="Item_container"> 
+            <div class="image-container">
+                {% if product.item_image %}
+                    <img src="{{ product.item_image.url }}" alt="{{ product.item_name }}" class="product-img">
+                {% else %}
+                    <img src="{% static 'main/css/admin/pics/default.jpg' %}" alt="No image" class="product-img">
+                {% endif %} 
+            </div>
+            <div class="product-info">
+                <h3 class="product-name">{{ product.item_name }}</h3>
+                <p class="product-price">₱{{ product.item_price }}</p>
+                <button class="add-to-cart-btn">Add to Cart</button>
+            </div>
+            {% empty %}
+                <p>No product.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+
+<!-- Cart Sidebar -->
+    <div id="cart-sidebar" class="cart-sidebar">
+        <div class="cart-header">
+            <h2>Your Cart</h2>
+            <button id="close-cart" class="close-btn">&times;</button>
+        </div>
+        <div class="listCart" id="listCart">
+        <div class="cart-items">
+            <div class="image">
+                <img src="{% static 'main/css/user/pictureneed/bed.png' %}" alt="">
+            </div>
+            <div class="name">
+                NAME
+            </div>
+            <div class="totalPrice">₱8,990</div>
+            <div class="quantity">
+                <span class="minus"><</span>
+                <span>1</span>
+                <span class="plus">></span>
+            </div>
+        </div>
+    </div>
+        <div class="cart-footer">
+                  <div class="cart-total">
+            <div class="total-label">Total Amount:</div>
+            <div class="total-amount">₱0.00</div>
+        </div>
+            <button class="checkout-btn" disabled>Checkout</button>
+        </div>
+    </div>
+
+    <!-- Overlay for closing sidebar on click outside -->
+    <div id="cart-overlay" class="cart-overlay"></div>
+
+    <footer>
+            <section class="container2">
+                <div class="copyright">
+                    <p>© 2025 Struktura Furniture Shop. All rights reserved.</p>
+                </div>
+            </section>
+        </footer>
+
+  </div>
+  <script src="{% static 'main/js/user/categories.js' %}"></script>
+  <script src="{% static 'main/js/user/carousel.js' %}"></script>
+  <script src="{% static 'main/js/user/script.js' %}"></script>
+</body>
