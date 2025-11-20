@@ -48,7 +48,7 @@ class Customers(models.Model):
     user_id = models.AutoField(primary_key=True, db_column="user_id")
     user_name = models.CharField(max_length=250, db_column="user_name")
     user_email = models.CharField(max_length=100, db_column="user_email", unique=True)
-    user_password = models.CharField(max_length=25, db_column="user_password")
+    user_password = models.CharField(max_length=250, db_column="user_password")
     user_address = models.CharField(max_length=200, db_column="user_address")
 
     class Meta:

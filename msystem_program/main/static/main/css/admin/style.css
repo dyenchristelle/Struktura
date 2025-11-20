@@ -481,7 +481,7 @@ body.delete-bg {
     margin-bottom: 10px;
     position: relative;    /* keep in normal flow */
     z-index: 1000; 
-    gap: 900px;
+    gap: 800px;
 }
 
 

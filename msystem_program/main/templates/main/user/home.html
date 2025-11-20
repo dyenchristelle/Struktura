@@ -21,8 +21,10 @@
                 <input type="checkbox" name="" id="toggler">
                 <label for="toggler" class="fas fa-bars"></label>
 
-                <img src="{% static 'main/css/user/pictureneed/logo1.png' %}" alt="logo" class="logo" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
-
+        <a href="{% url 'home_user' %}">
+        <img src="{% static 'main/css/user/pictureneed/logo1.png' %}" alt="logo" class="logo"
+            onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"> 
+        </a>
                 <nav class="navbar">
                     <a href="{% url 'home_user' %}">Home</a>
                     <a href="{% url 'products' %}">Product</a>

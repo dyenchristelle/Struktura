@@ -20,13 +20,16 @@
     <div class="header">
         <input type="checkbox" id="toggler">
         <label for="toggler" class="fas fa-bars"></label>
-
+ 
+        <a href="{% url 'home_user' %}">
         <img src="{% static 'main/css/user/pictureneed/logo1.png' %}" alt="logo" class="logo"
-            onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
+            onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"> 
+        </a>
+
 
         <nav class="navbar">
             <a href="{% url 'home_user' %}">Home</a>
-            <a href="{% url 'home' %}">Product</a>
+            <a href="{% url 'products' %}">Product</a>
             <a href="{% url 'about' %}">About</a>
             <a href="{% url 'home_user' %}#footer">Info Hub</a>
         </nav>

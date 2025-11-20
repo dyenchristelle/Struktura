@@ -1,4 +1,6 @@
-{% load static %}]
+{% load static %}
+{% load humanize %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -60,14 +62,16 @@
       <input type="checkbox" name="" id="toggler">
       <label for="toggler" class="fas fa-bars"></label>
 
-      <img src="{% static 'main/css/user/pictureneed/logo1.png' %}" alt="logo" class="logo"
-        onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
+        <a href="{% url 'home_user' %}">
+        <img src="{% static 'main/css/user/pictureneed/logo1.png' %}" alt="logo" class="logo"
+            onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"> 
+        </a>
 
       <nav class="navbar">
         <a href="{% url 'home_user' %}">Home</a>
         <a href="{% url 'products' %}" id="all-products-link">Product</a>
         <a href="{% url 'about' %}">About</a>
-        <a href="home.html#footer">Info Hub</a>
+        <a href="{% url 'home_user' %}#footer">Info Hub</a>
 
         <div class="search-bar">
           <input type="text" placeholder="Search products...">
@@ -123,34 +127,36 @@
   </section>
 
   <section>
-    <div class="category">
-      <h2>Product Categories</h2>
-            <div class="ellipse">
-                <div class="items">
-                    {% for category in categories %}
-                        <a href="{% url 'category' category.name %}" class="category">
-                            {% if category.image %}
-                                <img src="{{ category.image.url }}" alt="{{ category.name }}">
-                            {% else %}
-                                <img src="{% static 'products_images/default.jpg' %}" alt="{{ category.name }}">
-                            {% endif %}
-                            <p>{{ category.name|upper }}</p>
-                        </a>
-                    {% empty %}
-                        <p>No categories available</p>
-                    {% endfor %}
-                </div>
-            </div>
+<div class="category">
+    <h2>Product Categories</h2>
+    <div class="ellipse">
+        <div class="items">
+            {% for category in categories %}
+                <a href="{% url 'products_category' category.name %}#productsection" 
+                   class="{% if selected_category == category.id %}active{% endif %}">
+                    {% if category.image %}
+                        <img src="{{ category.image.url }}" alt="{{ category.name }}">
+                    {% else %}
+                        <img src="{% static 'products_images/default.jpg' %}" alt="{{ category.name }}">
+                    {% endif %}
+                    <p>{{ category.name|upper }}</p>
+                </a>
+            {% empty %}
+                <p>No categories available</p>
+            {% endfor %}
+        </div>
     </div>
+</div>
+
   </section>
 
   <section>
     <div class="separate"></div>
   </section>
 
-<section>
+    <section class="productsection">
     <div class="ItemsWrapper">
-        {% for product in products %}
+            {% for product in products %}
         <div class="Item_container"> 
             <div class="image-container">
                 {% if product.item_image %}
@@ -161,18 +167,19 @@
             </div>
             <div class="product-info">
                 <h3 class="product-name">{{ product.item_name }}</h3>
-                <p class="product-price">₱{{ product.item_price }}</p>
+                <p class="product-price">₱{{ product.item_price|intcomma }}</p>
                 <button class="add-to-cart-btn">Add to Cart</button>
             </div>
-            {% empty %}
-                <p>No product.</p>
-            {% endfor %}
         </div>
+    {% empty %}
+        <p>No products available.</p>
+    {% endfor %}
     </div>
-</section>
+   
+    </section>
 
 
-<!-- Cart Sidebar -->
+    <!-- Cart Sidebar -->
     <div id="cart-sidebar" class="cart-sidebar">
         <div class="cart-header">
             <h2>Your Cart</h2>
@@ -217,5 +224,5 @@
   </div>
   <script src="{% static 'main/js/user/categories.js' %}"></script>
   <script src="{% static 'main/js/user/carousel.js' %}"></script>
-  <script src="{% static 'main/js/user/script.js' %}"></script>
+  <script src="{% static 'main/js/user/user-script.js' %}"></script>
 </body>
