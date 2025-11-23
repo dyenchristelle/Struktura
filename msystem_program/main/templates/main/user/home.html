@@ -32,7 +32,11 @@
                     <a href="#footer">Info Hub</a>
                 </nav>
                 <div class="icon">
-                    <a href="{% url 'account' %}"><i class="fa-solid fa-circle-user"></i></a> 
+                    {% if request.session.customer_id %}
+                        <a href="{% url 'profile' %}"><i class="fa-solid fa-circle-user"></i></a>
+                    {% else %}
+                        <a href="{% url 'account' %}"><i class="fa-solid fa-circle-user"></i></a>
+                    {% endif %}
                     <i class="fa-solid fa-cart-shopping"></i>
                 </div>
             </div>

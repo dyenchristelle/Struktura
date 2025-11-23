@@ -2,9 +2,22 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Products, Customers, Category, SubCategory
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
+from functools import wraps
+from django.contrib.auth import authenticate, login
+
+
+def login_required_custom(view_func):
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if "user_id" not in request.session:
+            return redirect("account")
+        return view_func(request, *args, **kwargs)
+    return wrapper
 
 def home_user(request):
     categories = Category.objects.all()
+
+    request.session.get("user_id")
 
     context = {
         'categories': categories,
@@ -28,7 +41,6 @@ def account(request):
                     "error": "Email already registered!"
                 })
 
-        # create a new customer
             customer = Customers(
                 user_name=name,
                 user_email=email,
@@ -41,16 +53,18 @@ def account(request):
                     "name": name
                 })
         
-        else:  # Login (no name field)
+        else:  
             try:
                 customer = Customers.objects.get(user_email=email)
                 if check_password(password, customer.user_password):
-                    # Password matches! Login successful
+                  
                     messages.success(request, f"Welcome back, {customer.user_name}!")
-                    # You can redirect to a dashboard or home page here
+                    request.session["customer_id"] = customer.user_id
+                    request.session["customer_name"] = customer.user_name
+                    request.session["customer_email"] = customer.user_email
+
                     return redirect('home_user')
                 else:
-                    # Password does not match
                     return render(request, "main/user/account.html", {
                         "login_error": "Incorrect password!"
                     })
@@ -144,3 +158,44 @@ def products_page(request, category=None):
 #         'selected_category': selected_category,
 #     }
 #     return render(request, "main/user/product.html", context)
+
+@login_required_custom
+def profile(request):
+    user_id = request.session.get("user_id")
+    customer = Customers.objects.get(user_id=user_id)
+
+    if request.method == "POST":
+        customer.user_name = request.POST.get("user_name")
+        customer.user_email = request.POST.get("user_email")
+        customer.user_phone = request.POST.get("user_phone")
+        customer.user_address = request.POST.get("user_address")
+        customer.user_city = request.POST.get("user_city")
+        customer.user_province = request.POST.get("user_province")
+        customer.user_zip = request.POST.get("user_zip")
+        customer.user_birthdate = request.POST.get("user_birthdate") or None
+        customer.user_gender = request.POST.get("user_gender")
+        customer.user_notes = request.POST.get("user_notes")
+
+        print("user_name:", customer.user_name)
+        print("user_email:", customer.user_email)
+        print("user_phone:", customer.user_phone)
+        print("user_address:", customer.user_address)
+        print("user_birthdate:", customer.user_birthdate) 
+        print("user_gender:", customer.user_gender)
+        print("user_notes:", customer.user_notes)
+        customer.save()
+
+        return redirect("home_user")  
+
+    return render(request, "main/user/account_login.html", {
+        "user_name": customer.user_name,
+        "user_email": customer.user_email,
+        "user_phone": customer.user_phone,
+        "user_address": customer.user_address,
+        "user_city": customer.user_city,
+        "user_province": customer.user_province,
+        "user_zip": customer.user_zip,
+        "user_birthdate": customer.user_birthdate,
+        "user_gender": customer.user_gender,
+        "user_notes": customer.user_notes
+    })

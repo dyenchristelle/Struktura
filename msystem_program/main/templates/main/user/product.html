@@ -79,7 +79,12 @@
       </nav>
 
       <div class="icon">
-        <a href="{% url 'account' %}"><i class="fa-solid fa-circle-user"></i></a>
+        {% if request.session.customer_id %}
+            <a href="{% url 'profile' %}"><i class="fa-solid fa-circle-user"></i></a>
+            <i class="fa-solid fa-history" id="recently-viewed-icon" title="Recently Viewed"></i>
+        {% else %}
+            <a href="{% url 'account' %}"><i class="fa-solid fa-circle-user"></i></a>
+        {% endif %}
         <i class="fa-solid fa-cart-shopping"></i>
       </div>
     </div>
@@ -154,7 +159,7 @@
     <div class="separate"></div>
   </section>
 
-    <section class="productsection">
+<section class="productsection">
     <div class="ItemsWrapper">
             {% for product in products %}
         <div class="Item_container"> 
@@ -175,8 +180,7 @@
         <p>No products available.</p>
     {% endfor %}
     </div>
-   
-    </section>
+</section>
 
 
     <!-- Cart Sidebar -->

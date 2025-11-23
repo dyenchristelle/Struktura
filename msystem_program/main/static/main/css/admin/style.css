@@ -337,6 +337,18 @@ body.add-bg, body.update-bg {
     transform: scale(1.03);
 }
 
+/* .add-product-section textarea {
+    width: 95%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+    min-height: 40px;
+    resize: vertical;
+    box-sizing: border-box;
+} */
+
 /* Back button */
 .back-to-products {
     margin-top: 20px;

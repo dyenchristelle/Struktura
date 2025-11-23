@@ -50,6 +50,13 @@ class Customers(models.Model):
     user_email = models.CharField(max_length=100, db_column="user_email", unique=True)
     user_password = models.CharField(max_length=250, db_column="user_password")
     user_address = models.CharField(max_length=200, db_column="user_address")
+    user_city = models.CharField(max_length=250, db_column="user_city")
+    user_province = models.CharField(max_length=250, db_column="user_province")
+    user_zip = models.CharField(max_length=250, db_column="user_zip")
+    user_phone = models.CharField(max_length=25, db_column="user_phone")
+    user_birthdate = models.DateField(db_column="user_birthdate")
+    user_gender = models.CharField(max_length=50, db_column="user_gender")
+    user_notes = models.CharField(max_length=500, db_column="user_notes")
 
     class Meta:
         db_table = "customers"
@@ -57,10 +64,11 @@ class Customers(models.Model):
 
     def __str__(self):
         return self.user_name
+    
     def set_password(self, raw_password):
-        self.password = make_password(raw_password)
+        self.user_password = make_password(raw_password)
         self.save()
 
-    # helper method to check password
+    # method to check password
     def check_password(self, raw_password):
-        return check_password(raw_password, self.password)
+        return check_password(raw_password, self.user_password)

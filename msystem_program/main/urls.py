@@ -34,6 +34,7 @@ urlpatterns = [
     path('return/', views_user.return_page, name='return_page'),
     path('security/', views_user.security, name='security'),
     path('terms/', views_user.terms, name='terms'),
+    path('profile/', views_user.profile, name="profile")
 ]
 
 if settings.DEBUG:

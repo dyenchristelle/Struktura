@@ -1,0 +1,127 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Shopping Account — Struktura</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'main/css/user/account_login.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+  <header>
+    <a href="{% url 'home_user' %}" class="home-link">
+      <i class="fa-solid fa-house home-icon"></i>
+    </a>
+    <h1>Shopping Account Information</h1>
+    <p>Provide your details for orders and delivery. All fields marked * are required.</p>
+  </header>
+
+  <div class="container">
+
+    <main class="card" role="main" aria-labelledby="pageTitle">
+
+      <form class="grid" id="accountForm" method="POSt">
+        {% csrf_token %}
+        <div class="full">
+          <label for="fullname">Full name *</label>
+          <input id="fullname" name="user_name" type="text" placeholder="Juan Dela Cruz" value="{{ user_name }}" required>
+        </div>
+
+        <div>
+          <label for="email">Email address *</label>
+          <input id="email" name="user_email" type="email" placeholder="you@example.com" value="{{ user_email }}" required>
+        </div>
+
+        <div>
+          <label for="phone">Contact number *</label>
+          <input id="phone" name="user_phone" type="tel" placeholder="+63 912 345 6789" value="{{ user_phone }}" required>
+        </div>
+
+        <div class="full">
+          <label for="address">Complete delivery address *</label>
+          <textarea id="address" name="user_address" placeholder="House no., Street, Barangay" required>{{ user_address }}</textarea>
+        </div>
+
+        <div>
+          <label for="city">City / Municipality *</label>
+          <input id="city" name="user_city" type="text" placeholder="Binan" value="{{ user_city }}" required>
+        </div>
+
+        <div>
+          <label for="province">Province *</label>
+          <input id="province" name="user_province" type="text" placeholder="Laguna" value="{{ user_province }}" required>
+        </div>
+
+        <div>
+          <label for="zipcode">ZIP / Postal Code</label>
+          <input id="zipcode" name="user_zip" type="text" placeholder="4024" value="{{ user_zip }}">
+        </div>
+
+        <div>
+          <label for="birthdate">Birthdate</label>
+          <input id="birthdate" name="user_birthdate" type="date" value="{{ user_birthdate }}">
+        </div>
+
+        <div>
+          <label for="gender">Gender</label>
+          <select id="gender" name="user_gender">
+            <option value="{{ user_gender }}">Prefer not to say</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <div class="full">
+          <label for="notes">Other notes (delivery instructions, landmarks)</label>
+          <textarea id="notes" name="user_notes" placeholder="E.g., leave at guardhouse; near SM City">{{ user_notes }}</textarea>
+        </div>
+
+        <div class="actions full" role="group" aria-label="form actions">
+          <button type="button" class="btn secondary" onclick="resetForm()">Reset</button>
+          <button type="submit" class="btn save">Save information</button>
+        </div>
+      </form>
+
+    </main>
+  </div>
+
+  <footer>
+    &copy; 2025 Struktura Furniture Shop | All Rights Reserved
+  </footer>
+
+  <script>
+    function saveInfo(){
+      const form = document.getElementById('accountForm');
+      const data = Object.fromEntries(new FormData(form).entries());
+      if(!data.fullname || !data.email || !data.phone || !data.address){
+        alert('Please fill the required fields marked with *');
+        return;
+      }
+      localStorage.setItem('struktura_account', JSON.stringify(data));
+      alert('Account information saved locally.');
+    }
+
+    function resetForm(){
+      if(confirm('Reset all fields?')){
+        document.getElementById('accountForm').reset();
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', ()=>{
+      const saved = localStorage.getItem('struktura_account');
+      if(saved){
+        const obj = JSON.parse(saved);
+        for(const k in obj){
+          const el = document.getElementById(k);
+          if(el) el.value = obj[k];
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>
