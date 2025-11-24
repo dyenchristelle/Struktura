@@ -1,15 +1,18 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Products, Customers, Category, SubCategory
+from .models import Products, Customers, Category, SubCategory, BrowsingHistory
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
 from functools import wraps
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.utils import timezone
 
 
 def login_required_custom(view_func):
     @wraps(view_func)
     def wrapper(request, *args, **kwargs):
-        if "user_id" not in request.session:
+        if "customer_id" not in request.session:
             return redirect("account")
         return view_func(request, *args, **kwargs)
     return wrapper
@@ -62,8 +65,9 @@ def account(request):
                     request.session["customer_id"] = customer.user_id
                     request.session["customer_name"] = customer.user_name
                     request.session["customer_email"] = customer.user_email
+                    print("Session customer_id:", request.session.get("customer_id"))
 
-                    return redirect('home_user')
+                    return redirect('profile')
                 else:
                     return render(request, "main/user/account.html", {
                         "login_error": "Incorrect password!"
@@ -74,6 +78,16 @@ def account(request):
                 })
     
     return render(request, "main/user/account.html")
+
+@login_required_custom
+def logout_user(request):
+    logout(request)
+    if "user_id" in request.session:
+        del request.session["user_id"]
+
+    messages.success(request, "You have logged out successfully.")
+    return redirect("home_user")
+
 
 def contact(request):
     return render(request, "main/user/contact.html")
@@ -161,7 +175,7 @@ def products_page(request, category=None):
 
 @login_required_custom
 def profile(request):
-    user_id = request.session.get("user_id")
+    user_id = request.session.get("customer_id")
     customer = Customers.objects.get(user_id=user_id)
 
     if request.method == "POST":
@@ -198,4 +212,72 @@ def profile(request):
         "user_birthdate": customer.user_birthdate,
         "user_gender": customer.user_gender,
         "user_notes": customer.user_notes
+    })
+
+
+# ==== BROWSING HISTORY ====
+MAX_HISTORY = 30  # max items per user
+
+@csrf_exempt
+def save_browsing_history(request):
+    products = Products.objects.all()
+    print("save_browsing_history called")  # DEBUG
+
+    if request.method == "POST":
+        user_id = request.session.get("customer_id")
+        product_id = request.POST.get("product_id")
+        print(f"POST data - user_id: {user_id}, product_id: {product_id}")  # DEBUG
+
+        if not user_id or not product_id:
+            print("Missing data")  # DEBUG
+            return JsonResponse({"status": "error", "message": "Missing data"})
+
+        try:
+            user = Customers.objects.get(pk=user_id)
+            product = Products.objects.get(pk=product_id)
+            print(f"User: {user.user_name}, Product: {product.item_name}")  # DEBUG
+
+            # Check if the product is already in the user's history (no duplicates allowed)
+            existing = BrowsingHistory.objects.filter(user_id=user, item_id=product).first()
+            if existing:
+                existing.viewed_at = timezone.now()
+                existing.save()
+                print(f"Updated existing history for product {product.item_name}")  # DEBUG
+            else:
+                BrowsingHistory.objects.create(user_id=user, item_id=product)
+                print(f"Created new history for product {product.item_name}")  # DEBUG
+
+            # Ensure history limit (by using QUEUE FIFO)
+            history_count = BrowsingHistory.objects.filter(user_id=user).count()
+            print(f"User history count: {history_count}")  # DEBUG
+            if history_count > MAX_HISTORY:
+                oldest = BrowsingHistory.objects.filter(user_id=user).order_by('viewed_at')[:history_count - MAX_HISTORY]
+                print(f"Deleting {oldest.count()} oldest history items")  # DEBUG
+                oldest.delete()
+
+            return JsonResponse({"status": "success"})
+
+        except Customers.DoesNotExist:
+            print("User not found")  # DEBUG
+            return JsonResponse({"status": "error", "message": "User not found"})
+        except Products.DoesNotExist:
+            print("Product not found")  # DEBUG
+            return JsonResponse({"status": "error", "message": "Product not found"})
+
+    print("Invalid request")  # DEBUG
+    return JsonResponse({"status": "error", "message": "Invalid request"})
+
+
+def get_browsing_history(request):
+    user_id = request.session.get("customer_id")
+
+    if not user_id:
+        return JsonResponse({"status": "error", "message": "User not logged in"})
+
+    history_items = BrowsingHistory.objects.filter(user_id=user_id).order_by('-viewed_at')
+
+    products = [item.item_id for item in history_items]
+
+    return render(request, "main/user/product.html", {
+        "products": products
     })

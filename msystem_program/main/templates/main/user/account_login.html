@@ -17,13 +17,19 @@
     </a>
     <h1>Shopping Account Information</h1>
     <p>Provide your details for orders and delivery. All fields marked * are required.</p>
+    
+    <form action="{% url 'logout' %}" method="POST" style="display:inline;">
+      {% csrf_token %}
+      <button type="submit" class="btn logout-btn" onclick="return confirmLogout()">Log Out</button>
+    </form>
+
   </header>
 
   <div class="container">
 
     <main class="card" role="main" aria-labelledby="pageTitle">
 
-      <form class="grid" id="accountForm" method="POSt">
+      <form class="grid" id="accountForm" method="POSt" onsubmit="saveInfo(event)">
         {% csrf_token %}
         <div class="full">
           <label for="fullname">Full name *</label>
@@ -93,35 +99,8 @@
     &copy; 2025 Struktura Furniture Shop | All Rights Reserved
   </footer>
 
-  <script>
-    function saveInfo(){
-      const form = document.getElementById('accountForm');
-      const data = Object.fromEntries(new FormData(form).entries());
-      if(!data.fullname || !data.email || !data.phone || !data.address){
-        alert('Please fill the required fields marked with *');
-        return;
-      }
-      localStorage.setItem('struktura_account', JSON.stringify(data));
-      alert('Account information saved locally.');
-    }
+  <script src="{% static 'main/js/user/user-script.js' %}"></script>
 
-    function resetForm(){
-      if(confirm('Reset all fields?')){
-        document.getElementById('accountForm').reset();
-      }
-    }
-
-    window.addEventListener('DOMContentLoaded', ()=>{
-      const saved = localStorage.getItem('struktura_account');
-      if(saved){
-        const obj = JSON.parse(saved);
-        for(const k in obj){
-          const el = document.getElementById(k);
-          if(el) el.value = obj[k];
-        }
-      }
-    });
-  </script>
 
 </body>
 </html>

@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@100;300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <title>Furniture</title>
+    <title>Product</title>
     
 </head>
 
@@ -161,8 +161,12 @@
 
 <section class="productsection">
     <div class="ItemsWrapper">
-            {% for product in products %}
-        <div class="Item_container"> 
+        {% for product in products %}
+        <div class="Item_container" data-product-id="{{ product.item_id }}"
+         data-product-name="{{ product.item_name }}"
+         data-product-price="{{ product.item_price }}"
+         data-product-description="{{ product.item_description|default:'No description available.' }}"
+         data-product-image="{% if product.item_image %}{{ product.item_image.url }}{% else %}{% static 'main/css/admin/pics/default.jpg' %}{% endif %}">
             <div class="image-container">
                 {% if product.item_image %}
                     <img src="{{ product.item_image.url }}" alt="{{ product.item_name }}" class="product-img">
@@ -214,16 +218,38 @@
         </div>
     </div>
 
+    <div id="recently-viewed-sidebar" class="recently-viewed-sidebar">
+        <div class="recently-viewed-header">
+            <h2>Recently Viewed</h2>
+            <button id="close-recently-viewed" class="close-btn">&times;</button>
+        </div>
+        <div class="recently-viewed-list" id="recently-viewed-list">
+            {% for product in products %}
+            <div class="recently-viewed-item">
+                <img src="{{ product.item_image.url }}" alt="{{ product.item_name }}">
+                <div class="item-details">
+                    <div class="item-name">{{ product.item_name }}</div>
+                    <div class="item-price">₱{{ product.item_price|intcomma }}</div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="no-items">No recently viewed items.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div id="recently-viewed-overlay" class="recently-viewed-overlay"></div>
+
     <!-- Overlay for closing sidebar on click outside -->
     <div id="cart-overlay" class="cart-overlay"></div>
 
     <footer>
-            <section class="container2">
-                <div class="copyright">
-                    <p>© 2025 Struktura Furniture Shop. All rights reserved.</p>
-                </div>
-            </section>
-        </footer>
+        <section class="container2">
+            <div class="copyright">
+                <p>© 2025 Struktura Furniture Shop. All rights reserved.</p>
+            </div>
+        </section>
+    </footer>
 
   </div>
   <script src="{% static 'main/js/user/categories.js' %}"></script>

@@ -72,3 +72,16 @@ class Customers(models.Model):
     # method to check password
     def check_password(self, raw_password):
         return check_password(raw_password, self.user_password)
+    
+
+class BrowsingHistory(models.Model):
+    history_id = models.AutoField(primary_key=True, db_column="history_id")
+    user_id = models.ForeignKey(Customers, on_delete=models.CASCADE, db_column="user_id")
+    item_id = models.ForeignKey(Products, on_delete=models.CASCADE, db_column="product_id")
+    viewed_at = models.DateTimeField(auto_now_add=True, db_column="viewed_at")
+
+    class Meta:
+        db_table = "browsing_history"
+        managed = False
+        ordering = ['-viewed_at']  # newest first
+        unique_together = ('user_id', 'item_id') 

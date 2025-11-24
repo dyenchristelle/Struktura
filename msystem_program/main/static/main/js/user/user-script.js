@@ -1,3 +1,18 @@
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 
 // Dapat ito sa script.js file
 let cartIcon = document.querySelector('.fa-cart-shopping'); // Bagong selector
@@ -291,19 +306,39 @@ const closeModal = document.querySelector('.close-modal');
 
 // Get product data from the clicked item container
 function openProductModal(container) {
-    const productImg = container.querySelector('.product-img').src;
-    const productName = container.querySelector('.product-name').textContent;
-    const productPrice = container.querySelector('.product-price').textContent;
+    // Get data from data attributes (for description and image fallback)
+    const productId = container.dataset.productId;
+    const productName = container.dataset.productName;
+    const productPrice = container.dataset.productPrice;
+    const productDescription = container.dataset.productDescription;
+    const productImage = container.dataset.productImage;
     
     // Set modal content
-    document.getElementById('modal-img').src = productImg;
+    document.getElementById('modal-img').src = productImage;
     document.getElementById('modal-name').textContent = productName;
-    document.getElementById('modal-price').textContent = productPrice;
-    document.getElementById('modal-description').textContent = `Premium quality ${productName.toLowerCase()} designed for comfort and durability. Perfect addition to your home furniture collection.`;
-    
+    document.getElementById('modal-price').textContent = `₱${parseFloat(productPrice).toLocaleString()}`;
+    document.getElementById('modal-description').textContent = productDescription;
+
+    // Store product ID for cart actions
+    productModal.dataset.currentProductId = productId;
+
     productModal.classList.add('active');
     modalOverlay.classList.add('active');
     document.body.style.overflow = 'hidden';
+
+    // --- Send product to Django for browsing history ---
+    fetch('/api/save_browsing_history/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': getCookie('csrftoken') // Make sure you have a getCookie function
+        },
+        body: `product_id=${productId}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Browsing history saved:", data);
+    });
 }
 
 // Open modal when item container is clicked
@@ -316,26 +351,26 @@ document.querySelectorAll('.Item_container').forEach((container) => {
     });
 });
 
-//CLOSE PRODUCT MODAL
+// CLOSE PRODUCT MODAL
 function closeProductModal() {
     productModal.classList.remove('active');
     modalOverlay.classList.remove('active');
     document.body.style.overflow = '';
-    
+
     // Reset quantity to 1
     document.getElementById('quantity').value = 1;
 }
 
 // Quantity controls - Unlimited with event propagation fix
 document.querySelector('.quantity-btn.minus').addEventListener('click', function(e) {
-    e.stopPropagation(); // Prevent event from bubbling up
+    e.stopPropagation();
     const quantityInput = document.getElementById('quantity');
     const currentValue = parseInt(quantityInput.value);
     quantityInput.value = currentValue > 1 ? currentValue - 1 : 1;
 });
 
 document.querySelector('.quantity-btn.plus').addEventListener('click', function(e) {
-    e.stopPropagation(); // Prevent event from bubbling up
+    e.stopPropagation();
     const quantityInput = document.getElementById('quantity');
     const currentValue = parseInt(quantityInput.value);
     quantityInput.value = currentValue + 1;
@@ -343,11 +378,8 @@ document.querySelector('.quantity-btn.plus').addEventListener('click', function(
 
 // Allow any positive number
 document.getElementById('quantity').addEventListener('input', function(e) {
-    e.stopPropagation(); // Prevent event from bubbling up
-    // Remove any non-digit characters
+    e.stopPropagation();
     this.value = this.value.replace(/[^0-9]/g, '');
-    
-    // Ensure minimum value is 1
     if (this.value === '' || parseInt(this.value) < 1) {
         this.value = 1;
     }
@@ -360,26 +392,25 @@ document.querySelector('.quantity-selector').addEventListener('click', function(
 
 // Add to cart from modal
 document.querySelector('.add-to-cart-modal').addEventListener('click', function(e) {
-    e.stopPropagation(); // Prevent event from bubbling up
+    e.stopPropagation();
     const quantity = document.getElementById('quantity').value;
     const productName = document.getElementById('modal-name').textContent;
-    const productPrice = document.getElementById('modal-price').textContent;
-    
+
     if (parseInt(quantity) > 1000) {
         alert('Maximum order quantity is 1000 per transaction. Please contact us for bulk orders.');
         return;
     }
-    
+
     alert(`Added ${quantity} ${productName}(s) to cart!`);
     closeProductModal();
 });
 
 // Buy now from modal
 document.querySelector('.buy-now').addEventListener('click', function(e) {
-    e.stopPropagation(); // Prevent event from bubbling up
+    e.stopPropagation();
     const quantity = document.getElementById('quantity').value;
     const productName = document.getElementById('modal-name').textContent;
-    
+
     alert(`Proceeding to checkout with ${quantity} ${productName}(s)...`);
     closeProductModal();
 });
@@ -394,6 +425,28 @@ document.addEventListener('keydown', function(e) {
 // Event listeners for modal
 closeModal.addEventListener('click', closeProductModal);
 modalOverlay.addEventListener('click', closeProductModal);
+
+// Helper function for CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+
+
+
+
+
 
 
 //SEARCH
@@ -440,4 +493,79 @@ searchInput.addEventListener("input", () => {
         // filtering by name
         item.style.display = name.includes(keyword) ? "flex" : "none";
     });
+});
+
+
+
+// profile info
+function saveInfo(event) {
+  event.preventDefault(); // prevent form submit first
+
+  const form = document.getElementById('accountForm');
+  const data = Object.fromEntries(new FormData(form).entries());
+
+  if (!data.fullname || !data.email || !data.phone || !data.address) {
+    alert('Please fill the required fields marked with *');
+    return; // stop here
+  }
+
+  alert('Account information saved successfully.');
+
+  form.submit(); // now submit the form to Django
+}
+
+
+// logout
+function logout(){
+    if (confirm("Are you sure you want to log out?")) {
+        window.location.href = "/logout/?next=home_user"; 
+    }
+}
+
+
+// ==== recently viewed ===
+// Recently Viewed Sidebar Toggle Functions
+function openRecentlyViewedSidebar() {
+    document.getElementById('recently-viewed-sidebar').classList.add('open');
+    const overlay = document.getElementById('recently-viewed-overlay');
+    if (overlay) {
+        overlay.classList.add('show');
+    }
+    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+}
+
+function closeRecentlyViewedSidebar() {
+    document.getElementById('recently-viewed-sidebar').classList.remove('open');
+    const overlay = document.getElementById('recently-viewed-overlay');
+    if (overlay) {
+        overlay.classList.remove('show');
+    }
+    document.body.style.overflow = ''; // Restore scrolling
+}
+
+// Event listeners for sidebar
+const recentlyViewedIcon = document.getElementById('recently-viewed-icon');
+const closeRecentlyViewedBtn = document.getElementById('close-recently-viewed');
+const recentlyViewedOverlay = document.getElementById('recently-viewed-overlay');
+
+if (recentlyViewedIcon) {
+    recentlyViewedIcon.addEventListener('click', openRecentlyViewedSidebar);
+}
+
+if (closeRecentlyViewedBtn) {
+    closeRecentlyViewedBtn.addEventListener('click', closeRecentlyViewedSidebar);
+}
+
+if (recentlyViewedOverlay) {
+    recentlyViewedOverlay.addEventListener('click', closeRecentlyViewedSidebar);
+}
+
+// Close with ESC key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const sidebar = document.getElementById('recently-viewed-sidebar');
+        if (sidebar && sidebar.classList.contains('open')) {
+            closeRecentlyViewedSidebar();
+        }
+    }
 });

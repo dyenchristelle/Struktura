@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Struktura</title>
     <link rel="stylesheet" href="{% static 'main/css/user/home.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/user/try.css' %}">
     <link rel="stylesheet" href="media/pictureneed">
     <script src="home.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@100;300;400;500;600;700&display=swap" rel="stylesheet">
@@ -34,6 +35,7 @@
                 <div class="icon">
                     {% if request.session.customer_id %}
                         <a href="{% url 'profile' %}"><i class="fa-solid fa-circle-user"></i></a>
+                        <i class="fa-solid fa-history" id="recently-viewed-icon" title="Recently Viewed"></i>
                     {% else %}
                         <a href="{% url 'account' %}"><i class="fa-solid fa-circle-user"></i></a>
                     {% endif %}
@@ -196,4 +198,5 @@
         </footer>
     </div>
 </body>
+<script src="{% static 'main/js/user/user-script.js' %}"></script>
 </html> 

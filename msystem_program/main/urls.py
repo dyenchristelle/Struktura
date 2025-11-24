@@ -34,7 +34,11 @@ urlpatterns = [
     path('return/', views_user.return_page, name='return_page'),
     path('security/', views_user.security, name='security'),
     path('terms/', views_user.terms, name='terms'),
-    path('profile/', views_user.profile, name="profile")
+    path('profile/', views_user.profile, name="profile"),
+    path('logout/', views_user.logout_user, name='logout_user'),
+    path('api/save_browsing_history/', views_user.save_browsing_history, name='save_browsing_history'),
+    path("recently-viewed/", views_user.get_browsing_history, name="recently_viewed"),
+
 ]
 
 if settings.DEBUG:
