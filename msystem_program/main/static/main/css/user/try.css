@@ -27,7 +27,7 @@
   flex-direction: column;
   justify-content: space-between;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  margin: 0 auto; /* Center each container */
+  margin: 0 auto; 
 }
 
 
@@ -558,6 +558,7 @@
     margin-left: 1.5rem;
     cursor: pointer;
     transition: color 0.2s ease-in-out;
+    text-decoration: none;
 }
 
 #recently-viewed-icon:hover {

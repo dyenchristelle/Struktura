@@ -35,7 +35,7 @@
                 <div class="icon">
                     {% if request.session.customer_id %}
                         <a href="{% url 'profile' %}"><i class="fa-solid fa-circle-user"></i></a>
-                        <a href="{% url 'recently_viewed'}" class="fa-solid fa-history" id="recently-viewed-icon" title="Recently Viewed"></a>
+                        <a href="{% url 'recently_viewed' %}" class="fa-solid fa-history" id="recently-viewed-icon" title="Recently Viewed"></a>
                     {% else %}
                         <a href="{% url 'account' %}"><i class="fa-solid fa-circle-user"></i></a>
                     {% endif %}

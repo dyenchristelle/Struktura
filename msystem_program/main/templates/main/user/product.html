@@ -152,12 +152,25 @@
         </div>
     </div>
 </div>
+</section>
 
-  </section>
 
-  <section>
-    <div class="separate"></div>
-  </section>
+<section>
+    <div class="separate">
+        <div id="subcategory-bar" class="subcategory-bar">
+        {% if subcategories %}
+            {% for sub in subcategories %}
+                <a class="subcat-btn"
+                href="{% url 'subcategory_page' selected_category.name sub.name %}#productsection">
+                    {{ sub.name }}
+                </a>
+            {% endfor %}
+        {% else %}
+            <!-- No subcategories if no category selected -->
+        {% endif %}
+        </div>
+    </div>
+</section>
 
 <section class="productsection">
     <div class="ItemsWrapper">

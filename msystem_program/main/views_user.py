@@ -117,23 +117,36 @@ class TreeNode:
         self.children = []    # child TreeNodes
 
 
-def products_page(request, category=None):
+def products_page(request, category=None, subcategory=None):
     categories = Category.objects.all()
-    
-    if category:
-        # get Category object by name (case-insensitive)
-        selected_category = get_object_or_404(Category, name__iexact=category)
-        products = Products.objects.filter(item_category=selected_category)
-    else:
-        selected_category = None
-        products = Products.objects.all()
 
-    # Build category tree
+    selected_category = None
+    selected_subcategory = None
+
+    products = Products.objects.all()  # default
+
+    # category selected
+    if category:
+        selected_category = get_object_or_404(Category, name__iexact=category)
+        products = products.filter(item_category=selected_category)
+
+    # subcategory selected
+    if subcategory:
+        selected_subcategory = get_object_or_404(SubCategory, name__iexact=subcategory)
+        products = products.filter(subcategory=selected_subcategory)
+
+    # for subcategory bar
+    if selected_category:
+        subcategories = SubCategory.objects.filter(category=selected_category)
+    else:
+        subcategories = None
+
+    # Build category tree (Admin UI)
     category_tree = []
     for cat in categories:
         cat_node = TreeNode(cat.name, obj=cat)
-        subcategories = SubCategory.objects.filter(category=cat)
-        for sub in subcategories:
+        subs = SubCategory.objects.filter(category=cat)
+        for sub in subs:
             sub_node = TreeNode(sub.name, obj=sub)
             products_in_sub = Products.objects.filter(item_category=cat, subcategory=sub)
             for prod in products_in_sub:
@@ -142,13 +155,15 @@ def products_page(request, category=None):
             cat_node.children.append(sub_node)
         category_tree.append(cat_node)
 
-    context = {
+    return render(request, "main/user/product.html", {
         "categories": categories,
         "products": products,
-        "category_tree": category_tree,
+        "subcategories": subcategories,
         "selected_category": selected_category,
-    }
-    return render(request, "main/user/product.html", context)
+        "selected_subcategory": selected_subcategory,
+        "category_tree": category_tree,
+    })
+
 
 
 # def products_page(request, category=None):

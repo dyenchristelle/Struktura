@@ -25,6 +25,7 @@ urlpatterns = [
     path('home_user/', views_user.home_user, name="home_user"),
     path('products/', views_user.products_page, name="products"),
     path('products/<str:category>/', views_user.products_page, name="products_category"),
+    path('products/<str:category>/<str:subcategory>/', views_user.products_page, name="subcategory_page"),
     path('about/', views_user.about, name='about'),
     path('account/', views_user.account, name='account'),
     path('faq/', views_user.faq, name='faq'),
