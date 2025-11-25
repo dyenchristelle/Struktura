@@ -1,0 +1,40 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'main/css/user/try.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/user/account_login.css' %}">
+    <title>Browsing History</title>
+</head>
+<header>
+    <a href="{% url 'home_user' %}" class="home-link">
+      <i class="fa-solid fa-house home-icon"></i>
+    </a>
+    <h1>Browsing History</h1>
+    <p>Most recent thirty (30) products are stored here.</p>
+  </header>
+<body>
+        <div id="recently-viewed-sidebar" class="recently-viewed-sidebar">
+        <div class="recently-viewed-header">
+            <h2>Recently Viewed</h2>
+            <button id="close-recently-viewed" class="close-btn">&times;</button>
+        </div>
+        <div class="recently-viewed-list" id="recently-viewed-list">
+            {% for products in recent %}
+            <div class="recently-viewed-item">
+                <img src="{{ products.item_image.url }}" alt="{{ products.item_name }}">
+                <div class="item-details">
+                    <div class="item-name">{{ products.item_name }}</div>
+                    <div class="item-price">₱{{ products.item_price|intcomma }}</div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="no-items">No recently viewed items.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

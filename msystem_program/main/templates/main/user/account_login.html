@@ -18,9 +18,9 @@
     <h1>Shopping Account Information</h1>
     <p>Provide your details for orders and delivery. All fields marked * are required.</p>
     
-    <form action="{% url 'logout' %}" method="POST" style="display:inline;">
-      {% csrf_token %}
-      <button type="submit" class="btn logout-btn" onclick="return confirmLogout()">Log Out</button>
+    <form id="logoutUser" action="{% url 'logout' %}" method="POST" onsubmit="return confirm('Are you sure you want to log out?')" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn logout-btn">Log Out</button>
     </form>
 
   </header>

@@ -11,7 +11,7 @@ urlpatterns = [
     # path('add-product/', views.add_product, name='add_product'),
     # path('user-acc/', views.user_acc, name='user_acc'), # 9-30
     path("", views.admin_login, name="login"),
-    path("logout/", views.logout_user, name="logout"),
+    path("logout_admin/", views.logout_admin, name="logout_admin"),
     path("home_page/", views.home_page, name="home"),
     path('search/', views.search_view, name='search'),
     path("home/add/", views.add_product, name="add_product"),
@@ -35,7 +35,7 @@ urlpatterns = [
     path('security/', views_user.security, name='security'),
     path('terms/', views_user.terms, name='terms'),
     path('profile/', views_user.profile, name="profile"),
-    path('logout/', views_user.logout_user, name='logout_user'),
+    path('logout/', views_user.logout_user, name='logout'),
     path('api/save_browsing_history/', views_user.save_browsing_history, name='save_browsing_history'),
     path("recently-viewed/", views_user.get_browsing_history, name="recently_viewed"),
 

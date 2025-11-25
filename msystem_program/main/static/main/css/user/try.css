@@ -449,7 +449,7 @@
 
 /* Recently Viewed Sidebar */ 
 .recently-viewed-sidebar {
-    position: fixed;
+    /* position: fixed; */
     top: 115px;
     right: 0;
     width: 400px;

@@ -81,7 +81,7 @@
       <div class="icon">
         {% if request.session.customer_id %}
             <a href="{% url 'profile' %}"><i class="fa-solid fa-circle-user"></i></a>
-            <i class="fa-solid fa-history" id="recently-viewed-icon" title="Recently Viewed"></i>
+            <a href="{% url 'recently_viewed' %}" class="fa-solid fa-history" id="recently-viewed-icon" title="Recently Viewed"></a>
         {% else %}
             <a href="{% url 'account' %}"><i class="fa-solid fa-circle-user"></i></a>
         {% endif %}
@@ -215,26 +215,6 @@
             <div class="total-amount">₱0.00</div>
         </div>
             <button class="checkout-btn" disabled>Checkout</button>
-        </div>
-    </div>
-
-    <div id="recently-viewed-sidebar" class="recently-viewed-sidebar">
-        <div class="recently-viewed-header">
-            <h2>Recently Viewed</h2>
-            <button id="close-recently-viewed" class="close-btn">&times;</button>
-        </div>
-        <div class="recently-viewed-list" id="recently-viewed-list">
-            {% for product in products %}
-            <div class="recently-viewed-item">
-                <img src="{{ product.item_image.url }}" alt="{{ product.item_name }}">
-                <div class="item-details">
-                    <div class="item-name">{{ product.item_name }}</div>
-                    <div class="item-price">₱{{ product.item_price|intcomma }}</div>
-                </div>
-            </div>
-            {% empty %}
-            <p class="no-items">No recently viewed items.</p>
-            {% endfor %}
         </div>
     </div>
 

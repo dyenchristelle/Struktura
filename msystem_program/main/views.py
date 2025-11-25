@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from functools import wraps
 from django.db.models import Q
 
+
 def admin_login(request):
     error = None
     if request.method == "POST":
@@ -31,7 +32,7 @@ def admin_login(request):
         
     # return render(request, "main/admin/admin-index.html")
 
-def login_required_custom(view_func):
+def admin_required(view_func):
     @wraps(view_func)
     def wrapper(request, *args, **kwargs):
         if "user" not in request.session:
@@ -41,9 +42,9 @@ def login_required_custom(view_func):
 
 
 # LOGOUT
-@login_required_custom
-def logout_user(request):
-    logout(request)
+@admin_required
+def logout_admin(request):
+    request.session.pop("admin", None)
     return redirect("login")
 
 #  HOMEPAGE
@@ -83,7 +84,7 @@ def search_view(request):
 
 
 # === ADD PRODUCT ===
-@login_required_custom
+@admin_required
 def add_product(request):
     print("add_product view called")
     if request.method == "POST":
@@ -121,7 +122,7 @@ def add_product(request):
     return render(request, "main/admin/add_product.html")
 
 # ===== UPDATE PRODUCT =====
-@login_required_custom
+@admin_required
 def update_product(request, product_id):
     product = get_object_or_404(Products, pk=product_id)
     category = product.item_category
@@ -134,7 +135,7 @@ def update_product(request, product_id):
     return render(request, "main/admin/update_product.html", {"product": product, "category": category,})
 
 # ===== DELETE PRODUCT =====
-@login_required_custom
+@admin_required
 def delete_product(request, product_id):
     product = get_object_or_404(Products, pk=product_id)
     category = product.item_category
@@ -144,13 +145,13 @@ def delete_product(request, product_id):
     return render(request, "main/admin/delete_product.html", {"product": product, "category": category, })
 
 # ===== CUSTOMERS PAGE =====
-@login_required_custom
+@admin_required
 def customers_page(request):
     customers = Customers.objects.all()
     return render(request, "main/admin/customers.html", {"customers": customers})
 
 # ===== DELETE CUSTOMER =====
-@login_required_custom
+@admin_required
 def delete_customer(request, customer_id):
     customer = get_object_or_404(Customers, pk=customer_id)
     if request.method == "POST":
@@ -166,7 +167,7 @@ class TreeNode:
         self.children = []   # list of child TreeNode
 
 # ===== CATEGORY PAGE =====
-@login_required_custom
+@admin_required
 def category_page(request, category):
     products = Products.objects.filter(item_category__name=category)
 
@@ -189,7 +190,7 @@ def category_page(request, category):
     })
 
 
-@login_required_custom
+@admin_required
 def subcategory_page(request, category, subcategory):
     products = Products.objects.filter(
         item_category__name=category, subcategory__name__iexact=subcategory

@@ -81,12 +81,10 @@ def account(request):
 
 @login_required_custom
 def logout_user(request):
-    logout(request)
-    if "user_id" in request.session:
-        del request.session["user_id"]
+    request.session.pop("customer_id", None)
 
     messages.success(request, "You have logged out successfully.")
-    return redirect("home_user")
+    return redirect("account")
 
 
 def contact(request):
@@ -216,68 +214,64 @@ def profile(request):
 
 
 # ==== BROWSING HISTORY ====
-MAX_HISTORY = 30  # max items per user
+MAX_HISTORY = 30
 
-@csrf_exempt
 def save_browsing_history(request):
-    products = Products.objects.all()
-    print("save_browsing_history called")  # DEBUG
+    print("save_browsing_history called")
 
-    if request.method == "POST":
-        user_id = request.session.get("customer_id")
-        product_id = request.POST.get("product_id")
-        print(f"POST data - user_id: {user_id}, product_id: {product_id}")  # DEBUG
+    if request.method != "POST":
+        return redirect("products") 
 
-        if not user_id or not product_id:
-            print("Missing data")  # DEBUG
-            return JsonResponse({"status": "error", "message": "Missing data"})
+    user_id = request.session.get("customer_id")
+    product_id = request.POST.get("product_id")
+    print(f"POST data - user_id: {user_id}, product_id: {product_id}")
 
-        try:
-            user = Customers.objects.get(pk=user_id)
-            product = Products.objects.get(pk=product_id)
-            print(f"User: {user.user_name}, Product: {product.item_name}")  # DEBUG
+    if not user_id or not product_id:
+        print("Missing data")
+        return redirect("products")
 
-            # Check if the product is already in the user's history (no duplicates allowed)
-            existing = BrowsingHistory.objects.filter(user_id=user, item_id=product).first()
-            if existing:
-                existing.viewed_at = timezone.now()
-                existing.save()
-                print(f"Updated existing history for product {product.item_name}")  # DEBUG
-            else:
-                BrowsingHistory.objects.create(user_id=user, item_id=product)
-                print(f"Created new history for product {product.item_name}")  # DEBUG
+    try:
+        user = Customers.objects.get(pk=user_id)
+        product = Products.objects.get(pk=product_id)
+        print(f"User: {user.user_name}, Product: {product.item_name}")
 
-            # Ensure history limit (by using QUEUE FIFO)
-            history_count = BrowsingHistory.objects.filter(user_id=user).count()
-            print(f"User history count: {history_count}")  # DEBUG
-            if history_count > MAX_HISTORY:
-                oldest = BrowsingHistory.objects.filter(user_id=user).order_by('viewed_at')[:history_count - MAX_HISTORY]
-                print(f"Deleting {oldest.count()} oldest history items")  # DEBUG
-                oldest.delete()
+        # update timestamp if product already exist
+        existing = BrowsingHistory.objects.filter(user_id=user, item_id=product).first()
+        if existing:
+            existing.viewed_at = timezone.now()
+            existing.save()
+            print(f"Updated timestamp {existing.viewed_at}")
+        else:
+            BrowsingHistory.objects.create(user_id=user, item_id=product)
 
-            return JsonResponse({"status": "success"})
+        # FIFO
+        history_items = BrowsingHistory.objects.filter(user_id=user).order_by('viewed_at')
+        if history_items.count() > MAX_HISTORY:
+            delete_count = history_items.count() - MAX_HISTORY
+            oldest = history_items[:delete_count]
+            print(f"Deleting {delete_count} oldest items")
+            oldest.delete()
 
-        except Customers.DoesNotExist:
-            print("User not found")  # DEBUG
-            return JsonResponse({"status": "error", "message": "User not found"})
-        except Products.DoesNotExist:
-            print("Product not found")  # DEBUG
-            return JsonResponse({"status": "error", "message": "Product not found"})
+        return redirect("products")  # after saving, return to product page
 
-    print("Invalid request")  # DEBUG
-    return JsonResponse({"status": "error", "message": "Invalid request"})
+    except Exception as e:
+        print("Error:", e)
+        return redirect("products")
+
 
 
 def get_browsing_history(request):
     user_id = request.session.get("customer_id")
-
     if not user_id:
         return JsonResponse({"status": "error", "message": "User not logged in"})
 
-    history_items = BrowsingHistory.objects.filter(user_id=user_id).order_by('-viewed_at')
+    user = Customers.objects.get(pk=user_id)
+    history_items = BrowsingHistory.objects.filter(user_id=user).order_by('-viewed_at')
 
-    products = [item.item_id for item in history_items]
+    # Get Product objects in order
+    recent = [h.item_id for h in history_items]  
+    print("Recent products for user:", [p.item_name for p in recent]) 
 
-    return render(request, "main/user/product.html", {
-        "products": products
+    return render(request, "main/user/recent.html", {
+        "recent": recent
     })

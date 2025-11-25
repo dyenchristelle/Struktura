@@ -516,15 +516,14 @@ function saveInfo(event) {
 
 
 // logout
-function logout(){
-    if (confirm("Are you sure you want to log out?")) {
-        window.location.href = "/logout/?next=home_user"; 
-    }
-}
+// function logout(){
+//     if (confirm("Are you sure you want to log out?")) {
+//         document.getElementById("logoutUser").submit();
+//     }
+// }
 
 
 // ==== recently viewed ===
-// Recently Viewed Sidebar Toggle Functions
 function openRecentlyViewedSidebar() {
     document.getElementById('recently-viewed-sidebar').classList.add('open');
     const overlay = document.getElementById('recently-viewed-overlay');

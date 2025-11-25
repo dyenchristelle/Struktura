@@ -134,3 +134,9 @@ import os
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+# Authentication Redirects
+LOGIN_URL = '/account/'
+LOGIN_REDIRECT_URL = '/home_user/'
+LOGOUT_REDIRECT_URL = '/account/'
