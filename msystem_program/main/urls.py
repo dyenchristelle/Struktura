@@ -39,6 +39,7 @@ urlpatterns = [
     path('logout/', views_user.logout_user, name='logout'),
     path('api/save_browsing_history/', views_user.save_browsing_history, name='save_browsing_history'),
     path("recently-viewed/", views_user.get_browsing_history, name="recently_viewed"),
+    path('search_results/', views_user.search_products, name="search_products")
 
 ]
 

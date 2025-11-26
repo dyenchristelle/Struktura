@@ -589,3 +589,34 @@ footer .container2 {
     gap: 30px;
   }
 }
+
+
+/* Container of the search bar */
+.search-bar {
+    display: inline-block;  
+    position: relative;        
+    margin-left: 20px;           
+}
+
+/* Input field itself */
+.search-bar input {
+    width: 250px;               
+    padding: 8px 12px;          
+    border: 2px solid #ccc;      
+    border-radius: 25px;        
+    font-size: 16px;            
+    outline: none;              
+    transition: all 0.3s ease; 
+}
+
+/* Focus state for nicer appearance */
+.search-bar input:focus {
+    border-color: #f9940A;       
+    box-shadow: 0 0 5px rgba(0,0,0,0.2); 
+}
+
+/* Placeholder text style */
+.search-bar input::placeholder {
+    color: #888;             
+    font-style: italic;
+}

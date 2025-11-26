@@ -73,9 +73,15 @@
         <a href="{% url 'about' %}">About</a>
         <a href="{% url 'home_user' %}#footer">Info Hub</a>
 
-        <div class="search-bar">
-          <input type="text" placeholder="Search products...">
-        </div>
+        <form class="search-value" method="GET" action="{% url 'search_products' %}">
+        {% csrf_token %}
+            <div class="search-bar">
+                <input type="text" name="search" placeholder="Search products..." value="{{ search_query }}">
+                <button type="submit" class="search-btn">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </form>
       </nav>
 
       <div class="icon">
@@ -173,30 +179,46 @@
 </section>
 
 <section class="productsection">
-    <div class="ItemsWrapper">
-        {% for product in products %}
-        <div class="Item_container" data-product-id="{{ product.item_id }}"
+<div class="ItemsWrapper">
+    {% for product in products %}
+    <div class="Item_container"
+         data-product-id="{{ product.item_id }}"
          data-product-name="{{ product.item_name }}"
          data-product-price="{{ product.item_price }}"
          data-product-description="{{ product.item_description|default:'No description available.' }}"
-         data-product-image="{% if product.item_image %}{{ product.item_image.url }}{% else %}{% static 'main/css/admin/pics/default.jpg' %}{% endif %}">
-            <div class="image-container">
-                {% if product.item_image %}
-                    <img src="{{ product.item_image.url }}" alt="{{ product.item_name }}" class="product-img">
-                {% else %}
-                    <img src="{% static 'main/css/admin/pics/default.jpg' %}" alt="No image" class="product-img">
-                {% endif %} 
-            </div>
-            <div class="product-info">
-                <h3 class="product-name">{{ product.item_name }}</h3>
-                <p class="product-price">₱{{ product.item_price|intcomma }}</p>
-                <button class="add-to-cart-btn">Add to Cart</button>
-            </div>
+         data-product-image="{% if product.item_image %}{{ product.item_image.url }}{% else %}{% static 'main/css/admin/pics/default.jpg' %}{% endif %}"
+         data-product-quantity="{{ product.quantity }}">
+
+        <div class="image-container">
+
+            {% if product.quantity == 0 %}
+                <span class="sold-out">SOLD OUT</span>
+            {% endif %}
+
+            {% if product.item_image %}
+                <img src="{{ product.item_image.url }}" alt="{{ product.item_name }}" class="product-img">
+            {% else %}
+                <img src="{% static 'main/css/admin/pics/default.jpg' %}" alt="No image" class="product-img">
+            {% endif %}
         </div>
+
+        <div class="product-info">
+            <h3 class="product-name">{{ product.item_name }}</h3>
+            <p class="product-price">₱{{ product.item_price|intcomma }}</p>
+
+            <!-- Disable Add to Cart when SOLD OUT -->
+            <button class="add-to-cart-btn"
+                    {% if product.quantity == 0 %}disabled{% endif %}>
+                Add to Cart
+            </button>
+        </div>
+
+    </div>
     {% empty %}
         <p>No products available.</p>
     {% endfor %}
-    </div>
+</div>
+
 </section>
 
 
@@ -230,8 +252,6 @@
             <button class="checkout-btn" disabled>Checkout</button>
         </div>
     </div>
-
-    <div id="recently-viewed-overlay" class="recently-viewed-overlay"></div>
 
     <!-- Overlay for closing sidebar on click outside -->
     <div id="cart-overlay" class="cart-overlay"></div>

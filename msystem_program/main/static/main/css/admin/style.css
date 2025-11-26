@@ -194,7 +194,7 @@ footer {
   width: 280px;
   height: 470px; 
   text-align: center;
-  padding: 30px;
+  padding: 20px;
   transition: 0.3s;
   justify-content: flex-start;
 }
@@ -205,8 +205,8 @@ footer {
 }
 
 .product-card img {
-    width: 190px;
-    height: 160px;
+    width: 200px;
+    height: 200px;
     object-fit: cover;
     border-radius: 10%;
     border: 1px solid rgba(255, 255, 255, 0.368);
@@ -608,9 +608,9 @@ body.delete-bg {
 strong {
     font-family: "Roboto", Helvetica, sans-serif;
     color: #ffe5e5;
-    font-weight: 1000; 
+    font-weight: 900; 
     text-align: left;
-    font-size: 25px;
+    font-size: 20px;
     display: block;
     margin-bottom: 5px;
     margin-top: 10px; 
@@ -1024,10 +1024,10 @@ a.button {
 
 .customer-page h6 {
     font-size: 30px;
-    font-weight: bold;
+    margin-top: 0 !important;
     letter-spacing: 1px;
     color: #fac67e;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     padding-left: 15px;
 }
 
@@ -1046,8 +1046,12 @@ a.button {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    width: 1200px;  /* adjust overall width */
-    margin: 0 auto; 
+    width: 1200px;
+    margin: 0 auto;
+
+    height: 600px;        /* set any height you want */
+    overflow-y: auto;     /* makes it scrollable */
+    padding-right: 10px;  /* optional: avoids content being cut by scrollbar */
 }
 
 .customer-row {

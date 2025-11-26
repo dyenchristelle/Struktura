@@ -564,3 +564,28 @@
 #recently-viewed-icon:hover {
     color: #f9940A;
 }
+
+
+/* SEARCH  */
+.search-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #65360d;
+    background-color: #ffffff;
+}
+
+.search-btn:hover {
+    color: #d97807;
+}
+
+.search-results {
+    margin-bottom: 0 !important;
+    color: #65360d;
+    font-size: 15px;
+}

@@ -85,3 +85,27 @@ class BrowsingHistory(models.Model):
         managed = False
         ordering = ['-viewed_at']  # newest first
         unique_together = ('user_id', 'item_id') 
+
+
+class UserCart(models.Model):
+    cart_id = models.AutoField(primary_key=True, db_column="cart_id")
+    user_id = models.ForeignKey(Customers, on_delete=models.CASCADE, db_column="user_id")
+    item_id = models.ForeignKey(Products, on_delete=models.CASCADE, db_column="product_id")
+    order_quantity = models.IntegerField(db_column="cart_quantity")
+    order_price = models.DecimalField(max_digits=10, decimal_places=2, db_column="cart_price")
+
+    class Meta:
+        db_table = "user_cart"
+        managed = False
+
+
+class UserOrder(models.Model):
+    order_id = models.AutoField(primary_key=True, db_column="order_id")
+    user_id = models.ForeignKey(Customers, on_delete=models.CASCADE, db_column="user_id")
+    product_id = models.ForeignKey(Products, on_delete=models.CASCADE, db_column="product_id")
+    order_quantity = models.IntegerField(db_column="order_quantity")
+    order_price = models.DecimalField(max_digits=10, decimal_places=2, db_column="order_price")
+
+    class Meta:
+        db_table = "user_order"
+        managed = False

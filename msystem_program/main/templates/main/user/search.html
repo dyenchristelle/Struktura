@@ -1,0 +1,132 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results | Struktura</title>
+    <link rel="stylesheet" href="{% static 'main/css/user/recent.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/user/product.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/user/try.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/user/modal.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Mooli&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@100;300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    
+<!-- Product Modal -->
+<div id="product-modal" class="product-modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        
+        <div class="modal-body">
+            <div class="modal-image">
+                <img id="modal-img" src="" alt="Product Image">
+            </div>
+            
+            <div class="modal-details">
+                <h2 id="modal-name">Product Name</h2>
+                <p id="modal-price" class="modal-price">₱0.00</p>
+                <p id="modal-description" class="modal-description">Product description will appear here.</p>
+                
+                <div class="quantity-selector">
+                    <label for="quantity">Quantity:</label>
+                    <div class="quantity-controls">
+                        <button class="quantity-btn minus">-</button>
+                        <input type="number" id="quantity" value="1" min="1">
+                        <button class="quantity-btn plus">+</button>
+                    </div>
+                </div>
+                
+                <div class="modal-actions">
+                    <button class="add-to-cart-modal">Add to Cart</button>
+                    <button class="buy-now">Buy Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-overlay" class="modal-overlay"></div>
+
+    <div class="header">
+      <input type="checkbox" name="" id="toggler">
+      <label for="toggler" class="fas fa-bars"></label>
+
+        <a href="{% url 'home_user' %}">
+        <img src="{% static 'main/css/user/pictureneed/logo1.png' %}" alt="logo" class="logo"
+            onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"> 
+        </a>
+
+      <nav class="navbar">
+        <a href="{% url 'home_user' %}">Home</a>
+        <a href="{% url 'products' %}" id="all-products-link">Product</a>
+        <a href="{% url 'about' %}">About</a>
+        <a href="{% url 'home_user' %}#footer">Info Hub</a>
+
+        <form class="search-value" method="GET" action="{% url 'search_products' %}">
+        {% csrf_token %}
+            <div class="search-bar">
+                <input type="text" name="search" placeholder="Search products..." value="{{ search_query }}">
+                <button type="submit" class="search-btn">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </form>
+      </nav>
+
+      <div class="icon">
+        <p class="search-results">Search Results for '{{ search_query }}'</p>
+      </div>
+    </div>
+
+
+    <div class="ItemsWrapper">
+        {% for product in products %}
+        <div class="Item_container"
+            data-product-id="{{ product.item_id }}"
+            data-product-name="{{ product.item_name }}"
+            data-product-price="{{ product.item_price }}"
+            data-product-description="{{ product.item_description|default:'No description available.' }}"
+            data-product-image="{% if product.item_image %}{{ product.item_image.url }}{% else %}{% static 'main/css/admin/pics/default.jpg' %}{% endif %}"
+            data-product-quantity="{{ product.quantity }}">
+
+            <div class="image-container">
+
+                {% if product.quantity == 0 %}
+                    <span class="sold-out">SOLD OUT</span>
+                {% endif %}
+
+                {% if product.item_image %}
+                    <img src="{{ product.item_image.url }}" alt="{{ product.item_name }}" class="product-img">
+                {% else %}
+                    <img src="{% static 'main/css/admin/pics/default.jpg' %}" alt="No image" class="product-img">
+                {% endif %}
+            </div>
+
+            <div class="product-info">
+                <h3 class="product-name">{{ product.item_name }}</h3>
+                <p class="product-price">₱{{ product.item_price|intcomma }}</p>
+
+                <!-- Disable Add to Cart when SOLD OUT -->
+                <button class="add-to-cart-btn"
+                        {% if product.quantity == 0 %}disabled{% endif %}>
+                    Add to Cart
+                </button>
+            </div>
+
+        </div>
+        {% empty %}
+            <p>No products available.</p>
+        {% endfor %}
+    </div>
+
+<script src="{% static 'main/js/user/user-script.js' %}"></script>
+</body>
+</html>

@@ -299,6 +299,7 @@ updateCartDisplay();
 
 // MODAL
 
+document.addEventListener("DOMContentLoaded", function () {
 // Dynamic Product Modal Functionality
 const productModal = document.getElementById('product-modal');
 const modalOverlay = document.getElementById('modal-overlay');
@@ -344,10 +345,19 @@ function openProductModal(container) {
 // Open modal when item container is clicked
 document.querySelectorAll('.Item_container').forEach((container) => {
     container.addEventListener('click', function(e) {
+
         // Don't open modal if Add to Cart button was clicked
-        if (!e.target.classList.contains('add-to-cart-btn')) {
-            openProductModal(container);
+        if (e.target.classList.contains('add-to-cart-btn')) {
+            return;
         }
+
+        // if product quantity = 0, modal won't open
+        const qty = parseInt(container.dataset.productQuantity);
+        if (qty === 0) {
+            return; 
+        }
+
+        openProductModal(container);
     });
 });
 
@@ -441,7 +451,7 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-
+});
 
 
 
@@ -513,58 +523,3 @@ function saveInfo(event) {
 
   form.submit(); // now submit the form to Django
 }
-
-
-// logout
-// function logout(){
-//     if (confirm("Are you sure you want to log out?")) {
-//         document.getElementById("logoutUser").submit();
-//     }
-// }
-
-
-// ==== recently viewed ===
-function openRecentlyViewedSidebar() {
-    document.getElementById('recently-viewed-sidebar').classList.add('open');
-    const overlay = document.getElementById('recently-viewed-overlay');
-    if (overlay) {
-        overlay.classList.add('show');
-    }
-    document.body.style.overflow = 'hidden'; // Prevent background scrolling
-}
-
-function closeRecentlyViewedSidebar() {
-    document.getElementById('recently-viewed-sidebar').classList.remove('open');
-    const overlay = document.getElementById('recently-viewed-overlay');
-    if (overlay) {
-        overlay.classList.remove('show');
-    }
-    document.body.style.overflow = ''; // Restore scrolling
-}
-
-// Event listeners for sidebar
-const recentlyViewedIcon = document.getElementById('recently-viewed-icon');
-const closeRecentlyViewedBtn = document.getElementById('close-recently-viewed');
-const recentlyViewedOverlay = document.getElementById('recently-viewed-overlay');
-
-if (recentlyViewedIcon) {
-    recentlyViewedIcon.addEventListener('click', openRecentlyViewedSidebar);
-}
-
-if (closeRecentlyViewedBtn) {
-    closeRecentlyViewedBtn.addEventListener('click', closeRecentlyViewedSidebar);
-}
-
-if (recentlyViewedOverlay) {
-    recentlyViewedOverlay.addEventListener('click', closeRecentlyViewedSidebar);
-}
-
-// Close with ESC key
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        const sidebar = document.getElementById('recently-viewed-sidebar');
-        if (sidebar && sidebar.classList.contains('open')) {
-            closeRecentlyViewedSidebar();
-        }
-    }
-});

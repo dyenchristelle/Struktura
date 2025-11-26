@@ -290,3 +290,19 @@ def get_browsing_history(request):
     return render(request, "main/user/recent.html", {
         "recent": recent
     })
+
+
+
+# ==== SEARCH ====
+def search_products(request):
+    search_query = request.GET.get('search', '')
+
+    if search_query:
+        products = Products.objects.filter(item_name__icontains=search_query)
+    else:
+        products = Products.objects.all()  # or none()
+
+    return render(request, 'main/user/search.html', {
+        'search_query': search_query,
+        'products': products
+    })
