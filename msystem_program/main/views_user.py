@@ -30,6 +30,8 @@ def home_user(request):
 def about(request):
     return render(request, "main/user/about.html")
 
+
+# ==== account signup/login
 def account(request):
     if request.method == "POST":
         name = request.POST.get("user_name")
@@ -79,6 +81,7 @@ def account(request):
     
     return render(request, "main/user/account.html")
 
+# ==== logout ====
 @login_required_custom
 def logout_user(request):
     request.session.pop("customer_id", None)
@@ -166,26 +169,7 @@ def products_page(request, category=None, subcategory=None):
 
 
 
-# def products_page(request, category=None):
-#     categories = Category.objects.all()
-
-#     if category:
-#         # Convert slug back to normal name
-#         category_name = category.replace('-', ' ')
-#         category_obj = get_object_or_404(Category, name__iexact=category_name)
-#         products = Products.objects.filter(item_category=category_obj)
-#         selected_category = category_obj.id
-#     else:
-#         products = Products.objects.all()
-#         selected_category = None
-
-#     context = {
-#         'categories': categories,
-#         'products': products,
-#         'selected_category': selected_category,
-#     }
-#     return render(request, "main/user/product.html", context)
-
+# ==== account profile ====
 @login_required_custom
 def profile(request):
     user_id = request.session.get("customer_id")
@@ -226,16 +210,17 @@ def profile(request):
         "user_gender": customer.user_gender,
         "user_notes": customer.user_notes
     })
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+
 
 
 # ==== BROWSING HISTORY ====
 MAX_HISTORY = 30
 
+@require_POST
 def save_browsing_history(request):
     print("save_browsing_history called")
-
-    if request.method != "POST":
-        return redirect("products") 
 
     user_id = request.session.get("customer_id")
     product_id = request.POST.get("product_id")
@@ -243,7 +228,10 @@ def save_browsing_history(request):
 
     if not user_id or not product_id:
         print("Missing data")
-        return redirect("products")
+        return JsonResponse({
+            "status": "error", 
+            "message": "Missing user_id or product_id"
+        }, status=400)
 
     try:
         user = Customers.objects.get(pk=user_id)
@@ -256,8 +244,10 @@ def save_browsing_history(request):
             existing.viewed_at = timezone.now()
             existing.save()
             print(f"Updated timestamp {existing.viewed_at}")
+            action = "updated"
         else:
             BrowsingHistory.objects.create(user_id=user, item_id=product)
+            action = "created"
 
         # FIFO
         history_items = BrowsingHistory.objects.filter(user_id=user).order_by('viewed_at')
@@ -267,12 +257,33 @@ def save_browsing_history(request):
             print(f"Deleting {delete_count} oldest items")
             oldest.delete()
 
-        return redirect("products")  # after saving, return to product page
+        return JsonResponse({
+            "status": "success",
+            "product_id": product_id,
+            "product_name": product.item_name,
+            "action": action
+        })
 
+    except Customers.DoesNotExist:
+        print("Customer not found")
+        return JsonResponse({
+            "status": "error",
+            "message": "Customer not found"
+        }, status=404)
+    
+    except Products.DoesNotExist:
+        print("Product not found")
+        return JsonResponse({
+            "status": "error",
+            "message": "Product not found"
+        }, status=404)
+    
     except Exception as e:
         print("Error:", e)
-        return redirect("products")
-
+        return JsonResponse({
+            "status": "error",
+            "message": str(e)
+        }, status=500)
 
 
 def get_browsing_history(request):
