@@ -91,7 +91,7 @@
         {% else %}
             <a href="{% url 'account' %}"><i class="fa-solid fa-circle-user"></i></a>
         {% endif %}
-        <i class="fa-solid fa-cart-shopping"></i>
+        <a href="{% url 'user_cart' %}"><i class="fa-solid fa-cart-shopping"></i></a>
       </div>
     </div>
 
@@ -208,7 +208,8 @@
 
             <!-- Disable Add to Cart when SOLD OUT -->
             <button class="add-to-cart-btn"
-                    {% if product.quantity == 0 %}disabled{% endif %}>
+                data-product-id="{{ product.item_id }}"
+                {% if product.quantity == 0 %}disabled{% endif %}>
                 Add to Cart
             </button>
         </div>
@@ -220,41 +221,6 @@
 </div>
 
 </section>
-
-
-    <!-- Cart Sidebar -->
-    <div id="cart-sidebar" class="cart-sidebar">
-        <div class="cart-header">
-            <h2>Your Cart</h2>
-            <button id="close-cart" class="close-btn">&times;</button>
-        </div>
-        <div class="listCart" id="listCart">
-        <div class="cart-items">
-            <div class="image">
-                <img src="{% static 'main/css/user/pictureneed/bed.png' %}" alt="">
-            </div>
-            <div class="name">
-                NAME
-            </div>
-            <div class="totalPrice">₱8,990</div>
-            <div class="quantity">
-                <span class="minus"><</span>
-                <span>1</span>
-                <span class="plus">></span>
-            </div>
-        </div>
-    </div>
-        <div class="cart-footer">
-                  <div class="cart-total">
-            <div class="total-label">Total Amount:</div>
-            <div class="total-amount">₱0.00</div>
-        </div>
-            <button class="checkout-btn" disabled>Checkout</button>
-        </div>
-    </div>
-
-    <!-- Overlay for closing sidebar on click outside -->
-    <div id="cart-overlay" class="cart-overlay"></div>
 
     <footer>
         <section class="container2">

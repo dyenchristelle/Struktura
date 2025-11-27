@@ -811,13 +811,13 @@ a.button {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     position: sticky;
     top: 0; /* 👈 this is required */
-    background-color: white; /* optional but helps visibility */
+    background-color: #a68a6a; /* optional but helps visibility */
     z-index: 100; /* keep above content */
 }
 
 /* Admin panel title */
 .admin-header h1 {
-    color: #b8926a;
+    color: #fffbf7;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 30px;  
     font-weight: 700; 
@@ -827,7 +827,7 @@ a.button {
 
 /* Navigation menu links */
 .admin-header nav a {
-    color: #b8926a;
+    color: #fff9f2;
     font-size: 16px;       
     font-weight: 500;      
     text-transform: uppercase; 
@@ -841,7 +841,7 @@ a.button {
     text-decoration: underline;
     font-weight: 600;   
     transform: scale(1.05); 
-    color: #bb6d19;
+    color: #f2cea8;
     text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
 }
 
@@ -1085,4 +1085,38 @@ a.button {
 
 .customer-transactions th {
     background-color: #f0f0f0;
+}
+
+
+.customer-row {
+    display: grid;
+    grid-template-columns: 30% 70%;
+    gap: 25px;
+    padding: 20px;
+    background: #4f4f4f8d;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+/* Vertical divider line */
+.customer-row:before {
+    content: "";
+    position: absolute;
+    left: 30%; /* exactly between the 2 columns */
+    top: 10px;
+    bottom: 10px;
+    width: 1px;
+    background: #dcdcdc;
+}
+
+@media (max-width: 750px) {
+    .customer-row {
+        grid-template-columns: 1fr;
+    }
+
+    /* Remove divider on mobile view */
+    .customer-row:before {
+        display: none;
+    }
 }

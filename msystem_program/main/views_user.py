@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Products, Customers, Category, SubCategory, BrowsingHistory
+from .models import Products, Customers, Category, SubCategory, BrowsingHistory, UserCart, UserOrder
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
 from functools import wraps
@@ -7,6 +7,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
+from django.views.decorators.http import require_POST
+from django.db import transaction
 
 
 def login_required_custom(view_func):
@@ -210,9 +212,6 @@ def profile(request):
         "user_gender": customer.user_gender,
         "user_notes": customer.user_notes
     })
-from django.http import JsonResponse
-from django.views.decorators.http import require_POST
-
 
 
 # ==== BROWSING HISTORY ====
@@ -317,3 +316,120 @@ def search_products(request):
         'search_query': search_query,
         'products': products
     })
+
+
+# ==== CART ====
+def get_cart_from_session(request):
+    """
+    Get cart stored in session for guest users.
+    Structure:
+    request.session['cart'] = {
+        product_id: {
+            'name': 'Product Name',
+            'price': 999.00,
+            'quantity': 2,
+            'image': '/path/to/img.jpg'
+        },
+        ...
+    }
+    """
+    return request.session.get('cart', {})
+
+def save_cart_to_session(request, cart):
+    request.session['cart'] = cart
+    request.session.modified = True
+
+@csrf_exempt
+def add_to_cart(request):
+    if request.method != "POST":
+        return JsonResponse({"status": "error", "message": "Invalid method."})
+
+    product_id = request.POST.get("product_id")
+    quantity = int(request.POST.get("quantity", 1))
+    user_id = request.session.get("customer_id")
+
+    product = Products.objects.get(item_id=product_id)
+
+    if user_id:  # logged-in user → save in DB
+        cart_item, created = UserCart.objects.get_or_create(
+            user_id_id=user_id,
+            item_id=product,
+            defaults={'order_quantity': quantity, 'order_price': product.item_price}
+        )
+        if not created:
+            cart_item.order_quantity += quantity
+            cart_item.save()
+    else:  # guest user → save in session
+        cart = get_cart_from_session(request)
+        if product_id in cart:
+            cart[product_id]['quantity'] += quantity
+        else:
+            cart[product_id] = {
+                'name': product.item_name,
+                'price': float(product.item_price),
+                'quantity': quantity,
+                'image': product.item_image.url if product.item_image else ''
+            }
+        save_cart_to_session(request, cart)
+
+    return JsonResponse({"status": "success"})
+
+
+    
+def user_cart(request):
+    user_id = request.session.get("customer_id")
+
+    if user_id:  # logged-in → DB
+        cart_items = UserCart.objects.filter(user_id_id=user_id).select_related('item_id')
+        cart_total = sum(item.subtotal() for item in cart_items)
+        return render(request, 'main/user/cart.html', {
+            'cart_items': cart_items,
+            'cart_total': cart_total,
+            'is_guest': False
+        })
+    else:  # guest → session
+        session_cart = get_cart_from_session(request)
+        cart_total = sum(item['price'] * item['quantity'] for item in session_cart.values())
+        return render(request, 'main/user/cart.html', {
+            'cart_items': session_cart,
+            'cart_total': cart_total,
+            'is_guest': True
+        })
+
+
+# ==== CHECKOUT ====
+
+def checkout(request):
+    user_id = request.session.get("customer_id")
+
+    if not user_id:
+        messages.info(request, "Please log in to checkout")
+        return redirect("login")
+
+    cart_items = UserCart.objects.filter(user_id_id=user_id).select_related("item_id")
+
+    if not cart_items.exists():
+        messages.error(request, "Your cart is empty.")
+        return redirect("user_cart")
+
+    with transaction.atomic():
+        for cart in cart_items:
+            product = cart.item_id
+            if product.quantity < cart.order_quantity:
+                messages.error(request, f"Not enough stock for {product.item_name}.")
+                return redirect("user_cart")
+
+            product.quantity -= cart.order_quantity
+            product.save()
+
+            UserOrder.objects.create(
+                user_id=cart.user_id,
+                product_id=product,
+                order_quantity=cart.order_quantity,
+                order_price=product.item_price
+            )
+
+        cart_items.delete()
+
+    messages.success(request, "Checkout successful!")
+    return redirect("order_success")

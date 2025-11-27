@@ -93,7 +93,10 @@ class UserCart(models.Model):
     item_id = models.ForeignKey(Products, on_delete=models.CASCADE, db_column="product_id")
     order_quantity = models.IntegerField(db_column="cart_quantity")
     order_price = models.DecimalField(max_digits=10, decimal_places=2, db_column="cart_price")
-
+    
+    def subtotal(self):
+        return self.item_id.item_price * self.order_quantity
+    
     class Meta:
         db_table = "user_cart"
         managed = False
