@@ -26,6 +26,11 @@
         {% csrf_token %}
         <input type="email" name="user_email" id="user_email" placeholder="Email address" required>
         <input type="password" name="user_password" id="user_password" placeholder="Password" required>
+        
+        {% if login_error %}
+  <p class="login-error">{{ login_error }}</p>
+{% endif %}
+        
         <button type="submit">Log In</button>
       </form>
       <div class="switch">
@@ -76,6 +81,15 @@
       alert('Thank you for joining Struktura, ' + name + '! Your account has been created.');
     }
   });
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const success = "{{ success|default:'' }}";
+    const name = "{{ name|default:'' }}";
+    if (success === "true") {
+        alert('Thank you for joining Struktura, ' + name + '! Your account has been created.');
+    }
+});
+
 </script>
 </body>
 </html>

@@ -124,6 +124,12 @@ form button:hover {
   background: #7a6b5e;
 }
 
+.login-error{
+  color:red; 
+  font-size:0.8em; 
+  margin-top:5px;
+}
+
 /* Switch Link */
 .switch {
   text-align: center;
