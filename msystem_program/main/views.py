@@ -162,23 +162,34 @@ def delete_customer(request, customer_id):
 
 class TreeNode:
     def __init__(self, name, obj=None):
-        self.name = name     # category, subcategory, or product name
-        self.obj = obj       # store model object
-        self.children = []   # list of child TreeNode
+        self.name = name
+        self.obj = obj
+        self.children = []
 
-# ===== CATEGORY PAGE =====
+
 @admin_required
 def category_page(request, category):
-    products = Products.objects.filter(item_category__name=category)
-
     category_obj = Category.objects.get(name=category)
+
+    subcategories = list(SubCategory.objects.filter(category=category_obj))
+
+    products = list(
+        Products.objects.filter(item_category=category_obj)
+        .select_related("subcategory")
+    )
+
+    sub_to_products = {sub: [] for sub in subcategories}
+
+    # group products under their subcategory
+    for prod in products:
+        if prod.subcategory in sub_to_products:
+            sub_to_products[prod.subcategory].append(prod)
+
     root_node = TreeNode(category_obj.name, obj=category_obj)
 
-    subcategories = SubCategory.objects.filter(category=category_obj)
     for sub in subcategories:
         sub_node = TreeNode(sub.name, obj=sub)
-        products_in_sub = Products.objects.filter(item_category=category_obj, subcategory=sub)
-        for prod in products_in_sub:
+        for prod in sub_to_products[sub]:
             prod_node = TreeNode(prod.item_name, obj=prod)
             sub_node.children.append(prod_node)
         root_node.children.append(sub_node)
@@ -190,27 +201,43 @@ def category_page(request, category):
     })
 
 
+
 @admin_required
 def subcategory_page(request, category, subcategory):
-    products = Products.objects.filter(
-        item_category__name=category, subcategory__name__iexact=subcategory
+    # get category
+    category_obj = Category.objects.get(name=category)
+
+    # get all subcategories under this category
+    subcategories = list(SubCategory.objects.filter(category=category_obj))
+
+    # get ALL products under this category
+    products = list(
+        Products.objects.filter(item_category=category_obj)
+        .select_related("subcategory")
     )
 
-    category_obj = Category.objects.get(name=category)
+    # Group products by subcategory (O(n))
+    sub_to_products = {sub: [] for sub in subcategories}
+    for prod in products:
+        if prod.subcategory in sub_to_products:
+            sub_to_products[prod.subcategory].append(prod)
+
+    # Build the category tree (same as category_page)
     root_node = TreeNode(category_obj.name, obj=category_obj)
 
-    subcategories = SubCategory.objects.filter(category=category_obj)
     for sub in subcategories:
         sub_node = TreeNode(sub.name, obj=sub)
-        products_in_sub = Products.objects.filter(item_category=category_obj, subcategory=sub)
-        for prod in products_in_sub:
+        for prod in sub_to_products[sub]:
             prod_node = TreeNode(prod.item_name, obj=prod)
             sub_node.children.append(prod_node)
         root_node.children.append(sub_node)
 
+    selected_subcategory = next((s for s in subcategories if s.name.lower() == subcategory.lower()), None)
+    products_in_sub = sub_to_products.get(selected_subcategory, [])
+
     return render(request, "main/admin/subcategory.html", {
-        "category_tree": root_node, 
-        "category": category_obj,     
-        "subcategory": SubCategory.objects.get(name=subcategory, category=category_obj),
-        "products": products,
+        "category_tree": root_node,
+        "category": category_obj,
+        "subcategory": selected_subcategory,
+        "products": products_in_sub,
     })
