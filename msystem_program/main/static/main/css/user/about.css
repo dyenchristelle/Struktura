@@ -113,7 +113,6 @@ body {
 .about-text h1 {
   font-size: 3rem;
   margin-bottom: 20px;
-  text-transform: lowercase;
   font-family: 'Playfair Display', serif;
 }
 
