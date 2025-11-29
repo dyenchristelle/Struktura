@@ -91,6 +91,8 @@ body {
 
 /* icons */
 .header .icon i {
+  position: relative;
+  display: inline-block;
   font-size: 2rem;
   color: #65360d;
   margin-left: 1.5rem;
@@ -272,13 +274,22 @@ body {
 }
 
 .separate {
-  text-align: center; 
-  padding: 2vh 0;
-  background: rgba(113, 60, 14, 0.5);
-  height: 50px;
-   box-shadow: 0 -2px 0 #65360d,   /* top line */
-              0 2px 0 #65360d;
+    display: flex;             
+    justify-content: center;   
+    align-items: center;       
+    padding: 2vh 0;
+    background: rgba(113, 60, 14, 0.5);
+    height: 50px;
+    box-shadow: 0 -2px 0 #65360d, 0 2px 0 #65360d;
 }
+
+.all-products {
+  color: #ffffff;
+  font-size: 40x;
+  font-weight: bold;
+}
+
+
 
 /* ======= FOOTER ======= */
 footer .container2 {
@@ -295,6 +306,19 @@ footer .container2 {
 }
 
 
+/* active category and sub */
+.category a.active p {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    font-weight: 600;
+}
+
+/* SUBCATEGORY underline when active */
+.subcat-btn.sub-active {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    font-weight: 600;
+}
 
 
 /* ======= BEST ITEM =======

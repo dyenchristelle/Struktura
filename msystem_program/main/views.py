@@ -160,6 +160,8 @@ def delete_customer(request, customer_id):
     return render(request, "main/admin/delete_customer.html", {"customer": customer})
 
 
+
+# ==== Product Category ====
 class TreeNode:
     def __init__(self, name, obj=None):
         self.name = name
@@ -216,7 +218,7 @@ def subcategory_page(request, category, subcategory):
         .select_related("subcategory")
     )
 
-    # Group products by subcategory (O(n))
+    # group products by subcategory (O(n))
     sub_to_products = {sub: [] for sub in subcategories}
     for prod in products:
         if prod.subcategory in sub_to_products:

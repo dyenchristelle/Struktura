@@ -35,8 +35,15 @@ urlpatterns = [
     path("recently-viewed/", views_user.get_browsing_history, name="recently_viewed"),
     path('search_results/', views_user.search_products, name="search_products"),
     path('shopping-cart/', views_user.user_cart, name="user_cart"),
+    path('update_cart_quantity/', views_user.update_cart_quantity, name='update_cart_quantity'),
     path("checkout/", views_user.checkout, name="checkout"),
+    path('buy-now/', views_user.buy_now, name='buy_now'),
     path('add_to_cart/', views_user.add_to_cart, name='add_to_cart'),  
+    path('api/get_user_cart/', views_user.get_user_cart, name='get_user_cart'),
+    path("remove-from-cart/", views_user.remove_from_cart, name="remove_from_cart"),
+    path('orders/', views_user.order_summary, name="order_summary"),
+
+
 ]
 
 if settings.DEBUG:

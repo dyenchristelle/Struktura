@@ -1,0 +1,61 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Summary | Struktura</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'main/css/user/order-summary.css' %}">
+</head>
+
+<body>
+
+  <header>
+    <a href="{% url 'home_user' %}" class="home-link">
+      <i class="fa-solid fa-house home-icon"></i>
+    </a>
+    <h1>Order Summary</h1>
+    <p>Summary of your orders are listed here.</p>
+  </header>
+
+  <div class="container">
+
+    <div class="summary-card">
+      <h2>Order Items</h2>
+
+      <div id="productList">
+        {% for order in orders %}
+          <div class="product-box">
+            <img src="{{ order.product_id.item_image.url }}" alt="{{ order.product_id.item_name }}">
+            <div class="product-info">
+              <h3>{{ order.product_id.item_name }}</h3>
+              <p>Quantity: <span class="qty">{{ order.order_quantity }}</span></p>
+              <p class="price">₱<span class="unitPrice">{{ order.order_price|intcomma }}</span></p>
+            </div>
+          </div>
+        {% empty %}
+          <p>No orders found.</p>
+        {% endfor %}
+      </div>
+      <p>-----------------------------------------------------------------------------------------------</p>
+      <div class="price-summary">
+        <p>Subtotal: ₱<span id="subtotal">{{ subtotal|intcomma }}</span></p>
+        <p>Shipping: ₱<span id="shippingFee">{{ shipping_fee|intcomma }}</span></p>
+        <h3>Total: ₱<span id="total">{{ total|intcomma }}</span></h3>
+      </div>
+  </div>
+</div>
+
+  <!-- FOOTER -->
+  <footer>
+    &copy; 2025 Struktura Furniture Shop | All Rights Reserved
+  </footer>
+
+  <script src="{% static 'main/js/user/user-script.js' %}"></script>
+
+</body>
+</html>

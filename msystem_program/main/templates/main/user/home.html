@@ -43,12 +43,20 @@
                 </nav>
                 <div class="icon">
                     {% if request.session.customer_id %}
-                        <a href="{% url 'profile' %}"><i class="fa-solid fa-circle-user"></i></a>
+                        <a href="{% url 'profile' %}">
+                            <i class="fa-solid fa-circle-user"></i>
+                        </a>
                         <a href="{% url 'recently_viewed' %}" class="fa-solid fa-history" id="recently-viewed-icon" title="Recently Viewed"></a>
                     {% else %}
-                        <a href="{% url 'account' %}"><i class="fa-solid fa-circle-user"></i></a>
+                        <a href="{% url 'account' %}">
+                            <i class="fa-solid fa-circle-user"></i>
+                        </a>
                     {% endif %}
-                    <a href="{% url 'user_cart' %}"><i class="fa-solid fa-cart-shopping"></i></a>
+                    <a href="{% url 'user_cart' %}">
+                        <i class="fa-solid fa-cart-shopping">
+                        <span id="cart-badge" class="cart-badge" style="display:none;"></span>
+                        </i>
+                    </a>
                 </div>
             </div>
 
@@ -65,7 +73,7 @@
             <div class="ellipse">
                 <div class="items">
                     {% for category in categories %}
-                        <a href="{% url 'category' category.name %}" class="category">
+                        <a href="{% url 'products_category' category.name %}#productsection" class="category">
                             {% if category.image %}
                                 <img src="{{ category.image.url }}" alt="{{ category.name }}">
                             {% else %}

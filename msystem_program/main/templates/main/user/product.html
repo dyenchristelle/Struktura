@@ -18,7 +18,8 @@
     <title>Product</title>
     
 </head>
-
+<body data-logged-in="{% if request.session.customer_id %}true{% else %}false{% endif %}">
+    
 <!-- Product Modal -->
 <div id="product-modal" class="product-modal">
     <div class="modal-content">
@@ -45,7 +46,7 @@
                 
                 <div class="modal-actions">
                     <button class="add-to-cart-modal">Add to Cart</button>
-                    <button class="buy-now">Buy Now</button>
+                    <button id="buyNowBtn" class="buy-btn">Buy Now</button>
                 </div>
             </div>
         </div>
@@ -55,7 +56,6 @@
 <div id="modal-overlay" class="modal-overlay"></div>
 
 
-<body>
   <div class="main">
 
     <div class="header">
@@ -86,12 +86,20 @@
 
       <div class="icon">
         {% if request.session.customer_id %}
-            <a href="{% url 'profile' %}"><i class="fa-solid fa-circle-user"></i></a>
+            <a href="{% url 'profile' %}">
+                <i class="fa-solid fa-circle-user"></i>
+            </a>
             <a href="{% url 'recently_viewed' %}" class="fa-solid fa-history" id="recently-viewed-icon" title="Recently Viewed"></a>
         {% else %}
-            <a href="{% url 'account' %}"><i class="fa-solid fa-circle-user"></i></a>
+            <a href="{% url 'account' %}">
+                <i class="fa-solid fa-circle-user"></i>
+            </a>
         {% endif %}
-        <a href="{% url 'user_cart' %}"><i class="fa-solid fa-cart-shopping"></i></a>
+        <a href="{% url 'user_cart' %}">
+            <i class="fa-solid fa-cart-shopping">
+            <span id="cart-badge" class="cart-badge" style="display:none;"></span>
+            </i>
+        </a>
       </div>
     </div>
 
@@ -172,7 +180,7 @@
                 </a>
             {% endfor %}
         {% else %}
-            <!-- No subcategories if no category selected -->
+            <p class="all-products">ALL PRODUCTS</p>
         {% endif %}
         </div>
     </div>
@@ -235,3 +243,4 @@
   <script src="{% static 'main/js/user/carousel.js' %}"></script>
   <script src="{% static 'main/js/user/user-script.js' %}"></script>
 </body>
+</html>

@@ -139,7 +139,7 @@
     gap: 15px;
 }
 
-.add-to-cart-modal, .buy-now {
+.add-to-cart-modal, .buy-btn {
     flex: 1;
     padding: 15px 25px;
     border: none;
@@ -163,12 +163,12 @@
     box-shadow: 0 5px 15px rgba(249, 148, 10, 0.3);
 }
 
-.buy-now {
+.buy-btn {
     background: #65360d;
     color: white;
 }
 
-.buy-now:hover {
+.buy-btn:hover {
     background: #4B2605;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(101, 54, 13, 0.3);

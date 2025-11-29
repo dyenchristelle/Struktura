@@ -253,8 +253,8 @@
 
 .cart-badge {
     position: absolute;
-    top: -8px;
-    right: -8px;
+    top: -5px;
+    right: -5px;
     background: #f9940A;
     color: white;
     border-radius: 50%;
@@ -267,6 +267,7 @@
     font-weight: bold;
     border: 2px solid white;
 }
+
 
 /* Cart Sidebar - Adapted to match your theme */
 .cart-sidebar {

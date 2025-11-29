@@ -11,95 +11,155 @@
   <link rel="stylesheet" href="{% static 'main/css/user/cart.css' %}">
 </head>
 
+
+
+<body data-logged-in="{% if request.session.customer_id %}true{% else %}false{% endif %}">
 <header>
     <a class="home-link" href="{% url 'home_user' %}"><i class="fa-solid fa-house home-icon"></i></a>
     <h1>Shopping Cart</h1>
     <p>Review and manage your selected items.</p>
 </header>
-
-<body>
     <div class="cart-container">
-        <!-- Cart Items -->
-        <div class="cart-items">
-            {% if cart_items %}
-            {% for cart in cart_items %}
-            <div class="cart-item"
-                data-cart-id="{{ cart.cart_id }}"
-                data-product-id="{{ cart.item_id.item_id }}"
-                data-product-price="{{ cart.item_id.item_price }}">
 
-                <div class="item-image">
-                    {% if cart.item_id.item_image %}
-                        <img src="{{ cart.item_id.item_image.url }}" alt="{{ cart.item_id.item_name }}" class="product-img-cart">
-                    {% else %}
-                        <img src="{% static 'main/css/admin/pics/default.jpg' %}" alt="No image" class="product-img-cart">
-                    {% endif %}
-                </div>
+    <!-- Cart Items -->
+    <div class="cart-items">
+        {% if cart_items %}
+            {% if is_guest %}
+                {% for pid, item in cart_items.items %}
+                    <div class="cart-item"
+                        data-cart-id="{{ pid }}"
+                        data-product-id="{{ pid }}"
+                        data-product-price="{{ item.price }}">
+                        
+                        <div class="item-image">
+                            {% if item.image %}
+                                <img src="{{ item.image }}" alt="{{ item.name }}" class="product-img-cart">
+                            {% else %}
+                                <img src="{% static 'main/css/admin/pics/default.jpg' %}" alt="No image" class="product-img-cart">
+                            {% endif %}
+                        </div>
 
-                <div class="item-details">
-                    <h3 class="product-name-cart">{{ cart.item_id.item_name }}</h3>
-                    <p class="product-price-cart">₱{{ cart.item_id.item_price|intcomma }}</p>
-                </div>
+                        <div class="item-details">
+                            <h3 class="product-name-cart">{{ item.name }}</h3>
+                            <p class="product-price-cart">₱{{ item.price|floatformat:2|intcomma }}</p>
+                        </div>
 
-                <div class="item-quantity">
-                    <button class="quantity-btn" onclick="changeQuantity(this, -1)">-</button>
-                    
-                    <input type="number"
-                        class="quantity-input"
-                        value="{{ cart.order_quantity }}"
-                        min="1"
-                        onchange="updateSubtotal(this)">
-                    
-                    <button class="quantity-btn" onclick="changeQuantity(this, 1)">+</button>
-                </div>
+                        <div class="item-quantity">
+                            <button class="quantity-btn" onclick="changeQuantity(this, -1)">-</button>
+                            <input type="number" class="quantity-input" value="{{ item.quantity }}" min="1" onchange="updateSubtotal(this)">
+                            <button class="quantity-btn" onclick="changeQuantity(this, 1)">+</button>
+                        </div>
 
-                <div class="item-subtotal">
-                    <p class="subtotal-price">₱{{ cart.subtotal|floatformat:2 }}</p>
-                </div>
+                        <div class="item-subtotal">
+                            <p class="subtotal-price">₱{{ item.price|floatformat:2|intcomma }}</p>
+                        </div>
 
-                <div class="item-remove">
-                    <button class="remove-btn" onclick="removeItem(this)">
-                        <i class="fa-solid fa-trash"></i>
-                    </button>
-                </div>
-
-            </div>
-            {% endfor %}
+                        <div class="item-remove">
+                            <button class="remove-btn" onclick="removeItem(this)"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                {% endfor %}
             {% else %}
-                <p class="no-items">Your cart is empty.</p>
+                {% for cart in cart_items %}
+                    <div class="cart-item"
+                        data-cart-id="{{ cart.cart_id }}"
+                        data-product-id="{{ cart.item_id.item_id }}"
+                        data-product-price="{{ cart.item_id.item_price }}">
+
+                        <div class="item-image">
+                            {% if cart.item_id.item_image %}
+                                <img src="{{ cart.item_id.item_image.url }}" alt="{{ cart.item_id.item_name }}" class="product-img-cart">
+                            {% else %}
+                                <img src="{% static 'main/css/admin/pics/default.jpg' %}" alt="No image" class="product-img-cart">
+                            {% endif %}
+                        </div>
+
+                        <div class="item-details">
+                            <h3 class="product-name-cart">{{ cart.item_id.item_name }}</h3>
+                            <p class="product-price-cart">₱{{ cart.item_id.item_price|floatformat:2|intcomma }}</p>
+                        </div>
+
+                        <div class="item-quantity">
+                            <button class="quantity-btn" onclick="changeQuantity(this, -1)">-</button>
+                            <input type="number" class="quantity-input" value="{{ cart.order_quantity }}" min="1" onchange="updateSubtotal(this)">
+                            <button class="quantity-btn" onclick="changeQuantity(this, 1)">+</button>
+                        </div>
+
+                        <div class="item-subtotal">
+                            <p class="subtotal-price">₱{{ cart.subtotal|floatformat:2|intcomma }}</p>
+                        </div>
+
+                        <div class="item-remove">
+                            <button class="remove-btn" onclick="removeItem(this)"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                {% endfor %}
             {% endif %}
-</div>
-
-        <!-- Cart Summary -->
-        <div class="cart-summary">
-            <h3>Cart Summary</h3>
-            <div class="summary-row">
-                <span>Subtotal:</span>
-                <span id="cart-subtotal">₱9,996.00</span>
-            </div>
-            <div class="summary-row">
-                <span>Shipping:</span>
-                <span>₱0.00</span>
-            </div>
-            <div class="summary-row total">
-                <span>Total:</span>
-                <span id="cart-total">₱9,996.00</span>
-            </div>
-            <button class="checkout-btn">Proceed to Checkout</button>
-        </div>
-
-        <!-- If Empty -->
-        <p class="no-items" style="display: none;">Your cart is empty.</p>
+        {% else %}
+            <p class="no-items">Your cart is empty.</p>
+        {% endif %}
     </div>
-</div>
-    <footer>
-        <section class="container2">
-            <div class="copyright">
-                <p>© 2025 Struktura Furniture Shop. All rights reserved.</p>
-            </div>
-        </section>
-    </footer>
 
-    <script src="{% static 'main/js/user/user-script.js' %}"></script>
+    <!-- Cart Summary -->
+    <div class="cart-summary">
+        <h3>Cart Summary</h3>
+        <div class="summary-row">
+            <span>Subtotal:</span>
+            <span id="cart-subtotal">₱{{ cart_total|floatformat:2|intcomma }}</span>
+        </div>
+        <div class="summary-row">
+            <span>Shipping:</span>
+            <span>₱0.00</span>
+        </div>
+        <div class="summary-row total">
+            <span>Total:</span>
+            <span id="cart-total">₱{{ cart_total|floatformat:2|intcomma }}</span>
+        </div>
+        <button id="checkoutBtn" class="checkout-btn">Checkout</button>
+    </div>
+
+    <!-- If Empty -->
+    <p class="no-items" style="display: none;">Your cart is empty.</p>
+</div>
+
+<footer>
+    <section class="container2">
+        <div class="copyright">
+            <p>© 2025 Struktura Furniture Shop. All rights reserved.</p>
+        </div>
+    </section>
+</footer>
+
+<script src="{% static 'main/js/user/user-script.js' %}"></script>
+<script>
+    const loginUrl = "{% url 'account' %}";
+    // Update subtotal of single item and cart summary
+    function updateSubtotal(input) {
+        const cartItem = input.closest('.cart-item');
+        const price = parseFloat(cartItem.dataset.productPrice);
+        const quantity = parseInt(input.value);
+        const subtotal = price * quantity;
+
+        cartItem.querySelector('.subtotal-price').textContent = '₱' + subtotal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+        updateCartSummary();
+    }
+
+    // Update cart summary totals
+    function updateCartSummary() {
+        let subtotal = 0;
+        document.querySelectorAll('.cart-item').forEach(item => {
+            const price = parseFloat(item.dataset.productPrice);
+            const quantity = parseInt(item.querySelector('.quantity-input').value);
+            subtotal += price * quantity;
+        });
+
+        document.getElementById('cart-subtotal').textContent = '₱' + subtotal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        document.getElementById('cart-total').textContent = '₱' + subtotal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    }
+
+    // Initial update on page load
+    updateCartSummary();
+</script>
 </body>
 </html>

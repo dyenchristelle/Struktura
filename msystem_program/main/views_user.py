@@ -9,6 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 from django.db import transaction
+import json 
 
 
 def login_required_custom(view_func):
@@ -71,6 +72,8 @@ def account(request):
                     request.session["customer_email"] = customer.user_email
                     print("Session customer_id:", request.session.get("customer_id"))
 
+                    merge_guest_cart_to_user(request, customer.user_id)
+
                     return redirect('profile')
                 else:
                     return render(request, "main/user/account.html", {
@@ -86,7 +89,7 @@ def account(request):
 # ==== logout ====
 @login_required_custom
 def logout_user(request):
-    request.session.pop("customer_id", None)
+    request.session.flush() 
 
     messages.success(request, "You have logged out successfully.")
     return redirect("account")
@@ -198,7 +201,7 @@ def profile(request):
         print("user_notes:", customer.user_notes)
         customer.save()
 
-        return redirect("home_user")  
+        return redirect("profile")  
 
     return render(request, "main/user/account_login.html", {
         "user_name": customer.user_name,
@@ -252,9 +255,10 @@ def save_browsing_history(request):
         history_items = BrowsingHistory.objects.filter(user_id=user).order_by('viewed_at')
         if history_items.count() > MAX_HISTORY:
             delete_count = history_items.count() - MAX_HISTORY
-            oldest = history_items[:delete_count]
-            print(f"Deleting {delete_count} oldest items")
-            oldest.delete()
+            oldest_ids = history_items.values_list('history_id', flat=True)[:delete_count]
+            BrowsingHistory.objects.filter(history_id__in=oldest_ids).delete()
+            print(f"Deleted {delete_count} oldest items")
+
 
         return JsonResponse({
             "status": "success",
@@ -395,41 +399,241 @@ def user_cart(request):
             'cart_total': cart_total,
             'is_guest': True
         })
+    
+
+# === for guest user then logged in ===
+def merge_guest_cart_to_user(request, user_id):
+    session_cart = get_cart_from_session(request)
+    if not session_cart:
+        return
+
+    for pid, item in session_cart.items():
+        product = Products.objects.get(item_id=pid)
+        cart_item, created = UserCart.objects.get_or_create(
+            user_id_id=user_id,
+            item_id=product,
+            defaults={'order_quantity': item['quantity'], 'order_price': item['price']}
+        )
+        if not created:
+            cart_item.order_quantity += item['quantity']
+            cart_item.save()
+    
+    # Clear session cart
+    request.session['cart'] = {}
+    request.session.modified = True
+
+
+# ==== user cart badge ====
+def get_user_cart(request):
+    user_id = request.session.get("customer_id")
+    if not user_id:
+        return JsonResponse({"cart_items": []})
+
+    cart_items = UserCart.objects.filter(user_id_id=user_id).select_related('item_id')
+    items = [{
+        "id": cart.cart_id,
+        "name": cart.item_id.item_name,
+        "price": float(cart.item_id.item_price),
+        "quantity": cart.order_quantity,
+        "image": cart.item_id.item_image.url if cart.item_id.item_image else ''
+    } for cart in cart_items]
+
+    return JsonResponse({"cart_items": items})
+
+
+    
+
+@csrf_exempt
+def update_cart_quantity(request):
+    if request.method != "POST":
+        return JsonResponse({"status": "error", "message": "Invalid method."})
+
+    cart_id = request.POST.get("cart_id")
+    quantity = int(request.POST.get("quantity", 1))
+    user_id = request.session.get("customer_id")
+
+    if user_id:
+        try:
+            cart_item = UserCart.objects.get(cart_id=cart_id, user_id_id=user_id)
+            cart_item.order_quantity = quantity
+            cart_item.save()
+            subtotal = cart_item.subtotal()
+            return JsonResponse({"status": "success", "subtotal": subtotal})
+        except UserCart.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "Cart item not found."})
+    else:
+        # Guest session cart
+        session_cart = get_cart_from_session(request)
+        for pid, item in session_cart.items():
+            if str(item.get('id', pid)) == str(cart_id):
+                item['quantity'] = quantity
+                save_cart_to_session(request, session_cart)
+                return JsonResponse({"status": "success", "subtotal": item['price'] * quantity})
+
+    return JsonResponse({"status": "error", "message": "Could not update cart."})
+
+
+# delete product in cart
+@csrf_exempt
+def remove_from_cart(request):
+    if request.method != "POST":
+        return JsonResponse({"status": "error", "message": "Invalid method."})
+
+    cart_id = request.POST.get("cart_id")
+    user_id = request.session.get("customer_id")
+
+    # Logged-in user → delete from DB
+    if user_id:
+        try:
+            UserCart.objects.get(cart_id=cart_id, user_id_id=user_id).delete()
+            return JsonResponse({"status": "success"})
+        except UserCart.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "Item not found."})
+
+    # Guest user → delete from session
+    session_cart = get_cart_from_session(request)
+
+    if cart_id in session_cart:
+        del session_cart[cart_id]
+        save_cart_to_session(request, session_cart)
+        return JsonResponse({"status": "success"})
+
+    return JsonResponse({"status": "error", "message": "Cannot remove item."})
+
 
 
 # ==== CHECKOUT ====
-
+@csrf_exempt
 def checkout(request):
-    user_id = request.session.get("customer_id")
+    if request.method != "POST":
+        return JsonResponse({"status": "error", "message": "Invalid request"})
 
-    if not user_id:
-        messages.info(request, "Please log in to checkout")
-        return redirect("login")
+    try:
+        data = json.loads(request.body)
+        items = data.get("items", [])
 
-    cart_items = UserCart.objects.filter(user_id_id=user_id).select_related("item_id")
+        print("DEBUG: Received checkout data:", items)
 
-    if not cart_items.exists():
-        messages.error(request, "Your cart is empty.")
-        return redirect("user_cart")
+        user_id = request.session.get("customer_id")
+        if not user_id:
+            return JsonResponse({"status": "error", "message": "You must be logged in"})
 
-    with transaction.atomic():
-        for cart in cart_items:
-            product = cart.item_id
-            if product.quantity < cart.order_quantity:
-                messages.error(request, f"Not enough stock for {product.item_name}.")
-                return redirect("user_cart")
+        user = Customers.objects.get(user_id=user_id)
 
-            product.quantity -= cart.order_quantity
+        for item in items:
+            product_id = item["id"]
+            qty = item["quantity"]
+
+            # Fetch product
+            product = Products.objects.get(item_id=product_id)
+
+            print(f"DEBUG: Before checkout → {product.item_name} stock:", product.item_quantity)
+
+            if product.item_quantity < qty:
+                return JsonResponse({
+                    "status": "error",
+                    "message": f"Not enough stock for {product.item_name}"
+                })
+
+            # Decrement stock
+            product.item_quantity -= qty
             product.save()
 
+            print(f"DEBUG: After checkout → {product.item_name} new stock:", product.item_quantity)
+
+            # SAVE TO USER ORDER TABLE
             UserOrder.objects.create(
-                user_id=cart.user_id,
+                user_id=user,
                 product_id=product,
-                order_quantity=cart.order_quantity,
+                order_quantity=qty,
                 order_price=product.item_price
             )
 
-        cart_items.delete()
+        UserCart.objects.filter(user_id=user).delete()
+        print("DEBUG: Cart cleared for user:", user_id)
 
-    messages.success(request, "Checkout successful!")
-    return redirect("order_success")
+        return JsonResponse({"status": "success", "message": "Order Successful!"})
+
+    except Exception as e:
+        print("CHECKOUT ERROR:", str(e))
+        return JsonResponse({"status": "error", "message": str(e)})
+
+# in buynow button from modal
+@csrf_exempt
+def buy_now(request):
+    print("DEBUG PY: Buy Now endpoint HIT")
+    print("DEBUG PY: Request method:", request.method)
+    print("DEBUG PY: Request body RAW:", request.body)
+
+    if request.method != "POST":
+        return JsonResponse({"status": "error", "message": "Invalid request"})
+
+    try:
+        data = json.loads(request.body)
+        print("DEBUG PY: Parsed JSON:", data)
+        product_id = data["id"]
+        qty = data["quantity"]
+
+        print("DEBUG: Buy Now product →", data)
+
+        user_id = request.session.get("customer_id")
+        if not user_id:
+            return JsonResponse({"status": "error", "message": "You must be logged in"})
+
+        user = Customers.objects.get(user_id=user_id)
+
+        product = Products.objects.get(item_id=product_id)
+
+        print(f"DEBUG: Before Buy Now → {product.item_name} stock:", product.item_quantity)
+
+        if product.item_quantity < qty:
+            return JsonResponse({
+                "status": "error",
+                "message": "Not enough stock"
+            })
+
+        product.item_quantity -= qty
+        product.save()
+
+        print(f"DEBUG: After Buy Now → {product.item_name} new stock:", product.item_quantity)
+
+        UserCart.objects.filter(user_id=user, item_id=product).delete()
+
+        UserOrder.objects.create(
+            user_id=user,
+            product_id=product,
+            order_quantity=qty,
+            order_price=product.item_price
+        )
+
+        print("DEBUG: Saved to UserOrder table.")
+
+        return JsonResponse({"status": "success", "message": "Order Successful!"})
+
+    except Exception as e:
+        print("BUY NOW ERROR:", str(e))
+        return JsonResponse({"status": "error", "message": str(e)})
+
+
+# ===== ORDER SUMMARY =====
+def order_summary(request):
+    user_id = request.session.get("customer_id")  
+    if not user_id:
+        return redirect('account')  
+
+    user = Customers.objects.get(pk=user_id)
+    
+    orders = UserOrder.objects.filter(user_id=user).select_related('product_id')
+    
+    # calculate subtotal for all orders
+    subtotal = sum(order.order_price * order.order_quantity for order in orders)
+    shipping_fee = 250  # fixed shipping hehe
+    total = subtotal + shipping_fee
+
+    context = {
+        'orders': orders,
+        'subtotal': subtotal,
+        'shipping_fee': shipping_fee,
+        'total': total,
+    }
+    return render(request, "main/user/order-summary.html", context)

@@ -13,6 +13,7 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+const csrftoken = getCookie("csrftoken");
 
 // ===== CART BADGE & CART MANAGEMENT =====
 const cartBadge = document.getElementById('cart-badge');
@@ -20,10 +21,13 @@ let cart = JSON.parse(sessionStorage.getItem('cart')) || [];
 
 function updateCartBadge() {
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-    console.log("DEBUG: Updating cart badge, total items =", totalItems);
-    if (cartBadge) {
-        cartBadge.textContent = totalItems;
-        cartBadge.style.display = totalItems > 0 ? 'inline-block' : 'none';
+    const badge = document.getElementById('cart-badge');
+    if (!badge) return;
+    if (totalItems > 0) {
+        badge.textContent = totalItems;
+        badge.style.display = 'flex';
+    } else {
+        badge.style.display = 'none';
     }
 }
 
@@ -131,6 +135,13 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.classList.add('modal-open');
         document.body.style.overflow = 'hidden';
 
+        console.log("DEBUG: buyNowBtn.dataset.id SET TO =", productId);
+        // const buyNowBtn = document.getElementById("buyNowBtn");
+        // if (buyNowBtn) {
+        //     buyNowBtn.dataset.id = productId;
+        //     console.log("DEBUG: buyNowBtn.dataset.id SET TO =", productId);
+        // }
+
         // Optional: save browsing history
         fetch('/api/save_browsing_history/', {
             method: 'POST',
@@ -214,6 +225,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         image: product_image,
                         quantity: quantity
                     });
+                    alert("Added to cart!");
                 }
             });
         });
@@ -251,6 +263,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         image: modalImg,
                         quantity: quantity
                     });
+                    alert("Added to cart!");
                 }
             });
 
@@ -266,4 +279,268 @@ document.addEventListener('DOMContentLoaded', function () {
     // Initialize cart display and badge
     updateCartBadge();
     updateCartDisplay();
+
+
+    // ===== BUY NOW BUTTON IN MODAL
+    const buyNowBtn = document.getElementById("buyNowBtn");
+
+    if (buyNowBtn) {
+        buyNowBtn.addEventListener("click", function () {
+            const productId = document.getElementById("product-modal").dataset.currentProductId;
+            const qty = parseInt(document.getElementById("quantity").value);
+
+            console.log("DEBUG: Buy Now CLICKED:", { id: productId, quantity: qty });
+
+            fetch("/buy-now/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrftoken,
+                },
+                body: JSON.stringify({ id: productId, quantity: qty }),
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log("DEBUG: Buy Now RESPONSE:", data);
+                alert(data.message);
+                if (data.status === "success") window.location.reload();
+            });
+        });
+    }
+
 });
+
+// ===== CART QUANTITY HANDLING FOR CART PAGE =====
+function changeCartQuantity(inputOrBtn, delta = 0) {
+    // Get the input element
+    let input;
+    if (inputOrBtn.tagName === 'INPUT') {
+        input = inputOrBtn;
+    } else {
+        input = inputOrBtn.closest('.item-quantity').querySelector('.quantity-input');
+    }
+
+    let currentQty = parseInt(input.value);
+    if (!currentQty) currentQty = 1;
+
+    currentQty += delta;
+    if (currentQty < 1) currentQty = 1;
+
+    input.value = currentQty;
+
+    // Update subtotal
+    updateCartItemSubtotal(input);
+}
+
+function updateCartItemSubtotal(input) {
+    const cartItem = input.closest('.cart-item');
+    const price = parseFloat(cartItem.dataset.productPrice);
+    const qty = parseInt(input.value);
+    const subtotalEl = cartItem.querySelector('.subtotal-price');
+
+    const subtotal = price * qty;
+    subtotalEl.textContent = '₱' + subtotal.toLocaleString();
+
+    const cartId = cartItem.dataset.cartId;
+    if (cartId) {
+        const itemInCart = cart.find(i => i.id == cartId);
+        if (itemInCart) {
+            itemInCart.quantity = qty;
+            updateCartBadge();  // updates the badge
+        }
+    }
+
+    updateCartTotal();
+
+    // Optionally, update DB via AJAX
+    fetch('/update_cart_quantity/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: `cart_id=${cartId}&quantity=${qty}`
+    })
+    .then(res => res.json())
+    .then(data => console.log('DEBUG: Cart quantity updated', data))
+    .catch(err => console.error(err));
+}
+
+function updateCartTotal() {
+    let total = 0;
+    document.querySelectorAll('.cart-item').forEach(item => {
+        const subtotalText = item.querySelector('.subtotal-price').textContent.replace(/₱|,/g, '');
+        total += parseFloat(subtotalText);
+    });
+
+    const subtotalEl = document.getElementById('cart-subtotal');
+    const totalEl = document.getElementById('cart-total');
+
+    if (subtotalEl) subtotalEl.textContent = '₱' + total.toLocaleString();
+    if (totalEl) totalEl.textContent = '₱' + total.toLocaleString();
+}
+
+
+// Bind cart quantity buttons & inputs
+document.querySelectorAll('.cart-item .quantity-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const delta = btn.textContent === '+' ? 1 : -1;
+        changeCartQuantity(btn, delta);
+    });
+});
+
+document.querySelectorAll('.cart-item .quantity-input').forEach(input => {
+    input.addEventListener('change', function() {
+        changeCartQuantity(input, 0); 
+    });
+});
+
+
+
+// cart summary
+function updateCartSummary() {
+    let subtotal = 0;
+    document.querySelectorAll('.cart-item').forEach(item => {
+        const price = parseFloat(item.dataset.productPrice);
+        const quantity = parseInt(item.querySelector('.quantity-input').value);
+        subtotal += price * quantity;
+    });
+
+    document.getElementById('cart-subtotal').textContent = '₱' + subtotal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    document.getElementById('cart-total').textContent = '₱' + subtotal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+}
+
+// Call this after quantity change
+function updateSubtotal(input) {
+    const cartItem = input.closest('.cart-item');
+    const price = parseFloat(cartItem.dataset.productPrice);
+    const quantity = parseInt(input.value);
+    const subtotalPrice = price * quantity;
+
+    cartItem.querySelector('.subtotal-price').textContent = '₱' + subtotalPrice.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    
+    updateCartSummary();
+}
+
+// fetch 
+document.addEventListener('DOMContentLoaded', async function () {
+    const isLoggedIn = document.body.dataset.loggedIn === 'true';
+    let cart = [];
+
+    if (isLoggedIn) {
+        // Fetch cart from DB for logged-in user
+        try {
+            const res = await fetch('/api/get_user_cart/');
+            const data = await res.json();
+            cart = data.cart_items;
+        } catch (err) {
+            console.error(err);
+        }
+    } else {
+        cart = JSON.parse(sessionStorage.getItem('cart')) || [];
+    }
+
+    // Initialize badge and display
+    updateCartBadge();
+    updateCartDisplay();
+});
+
+
+// remove item in cart
+function removeItem(btn) {
+    const cartItem = btn.closest('.cart-item');
+    const cartId = cartItem.dataset.cartId;
+
+    console.log("DEBUG: Removing item:", cartId);
+
+    fetch("/remove-from-cart/", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": getCookie("csrftoken"),
+        },
+        body: new URLSearchParams({ cart_id: cartId })
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log("DEBUG: Remove response:", data);
+
+        if (data.status === "success") {
+            cartItem.remove();                 // remove from page
+            updateCartSummary();               // refresh totals
+
+            // If no items left, show "empty" message
+            if (document.querySelectorAll('.cart-item').length === 0) {
+                document.querySelector('.no-items').style.display = 'block';
+            }
+        } else {
+            alert("Failed to remove item.");
+        }
+    });
+}
+
+
+
+// ==== CHECKOUT =============================================================
+// in cart:
+document.getElementById("checkoutBtn").addEventListener("click", function () {
+    const loggedIn = document.body.dataset.loggedIn === "true"; // true if logged in
+    if (!loggedIn) {
+        alert("You must log in to checkout!");
+        window.location.href = "/account/"; 
+        return;
+    }
+
+    console.log("DEBUG: Checkout clicked");
+
+    // Collect cart items from the page
+    const cartItems = [];
+    document.querySelectorAll(".cart-item").forEach(item => {
+        cartItems.push({
+            id: item.dataset.productId,
+            quantity: parseInt(item.querySelector(".quantity-input").value)
+        });
+    });
+
+    if (cartItems.length === 0) {
+        alert("Your cart is empty!");
+        return;
+    }
+
+    fetch("/checkout/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrftoken,
+        },
+        body: JSON.stringify({ items: cartItems }), // send the items properly
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log("DEBUG: Checkout response:", data);
+        alert(data.message);
+
+        if (data.status === "success") {
+            window.location.reload();
+        }
+    });
+});
+
+
+// order summary =====
+function calculateTotals() {
+  const products = document.querySelectorAll(".product-box");
+  let subtotal = 0;
+
+  products.forEach(product => {
+    const qty = Number(product.querySelector(".qty").innerText);
+    const unitPrice = Number(product.querySelector(".unitPrice").innerText);
+    subtotal += qty * unitPrice;
+  });
+
+  const shippingFee = Number(document.getElementById("shippingFee").innerText);
+
+  document.getElementById("subtotal").innerText = subtotal;
+  document.getElementById("total").innerText = subtotal + shippingFee;
+}
+
+calculateTotals();
