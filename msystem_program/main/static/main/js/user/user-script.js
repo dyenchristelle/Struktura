@@ -1,3 +1,5 @@
+let cart = JSON.parse(sessionStorage.getItem("cart")) || [];
+
 // ===== HELPER: GET CSRF TOKEN =====
 function getCookie(name) {
     let cookieValue = null;
@@ -16,19 +18,20 @@ function getCookie(name) {
 const csrftoken = getCookie("csrftoken");
 
 // ===== CART BADGE & CART MANAGEMENT =====
-const cartBadge = document.getElementById('cart-badge');
-let cart = JSON.parse(sessionStorage.getItem('cart')) || [];
-
 function updateCartBadge() {
-    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-    const badge = document.getElementById('cart-badge');
-    if (!badge) return;
-    if (totalItems > 0) {
-        badge.textContent = totalItems;
-        badge.style.display = 'flex';
-    } else {
-        badge.style.display = 'none';
-    }
+    fetch("/get-cart-count/")
+        .then(res => res.json())
+        .then(data => {
+            const badge = document.getElementById("cart-badge");
+            if (!badge) return;
+
+            if (data.count > 0) {
+                badge.textContent = data.count;
+                badge.style.display = "flex";
+            } else {
+                badge.style.display = "none";
+            }
+        });
 }
 
 function saveCart() {
@@ -226,6 +229,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         quantity: quantity
                     });
                     alert("Added to cart!");
+                    updateCartBadge();
                 }
             });
         });
@@ -264,6 +268,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         quantity: quantity
                     });
                     alert("Added to cart!");
+                    updateCartBadge();
                 }
             });
 
@@ -425,7 +430,6 @@ function updateSubtotal(input) {
 // fetch 
 document.addEventListener('DOMContentLoaded', async function () {
     const isLoggedIn = document.body.dataset.loggedIn === 'true';
-    let cart = [];
 
     if (isLoggedIn) {
         // Fetch cart from DB for logged-in user
@@ -465,10 +469,10 @@ function removeItem(btn) {
         console.log("DEBUG: Remove response:", data);
 
         if (data.status === "success") {
-            cartItem.remove();                 // remove from page
-            updateCartSummary();               // refresh totals
+            cartItem.remove();      
+            updateCartSummary();    
+            updateCartBadge();
 
-            // If no items left, show "empty" message
             if (document.querySelectorAll('.cart-item').length === 0) {
                 document.querySelector('.no-items').style.display = 'block';
             }
@@ -521,6 +525,7 @@ document.getElementById("checkoutBtn").addEventListener("click", function () {
 
         if (data.status === "success") {
             window.location.reload();
+            updateCartBadge();
         }
     });
 });

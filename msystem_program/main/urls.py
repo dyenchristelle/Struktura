@@ -4,7 +4,6 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path("admin_login/", views.admin_login, name="login"),
     path("logout_admin/", views.logout_admin, name="logout_admin"),
     path("home_page/", views.home_page, name="home"),
     path('search/', views.search_view, name='search'),
@@ -12,7 +11,6 @@ urlpatterns = [
     path("home/update/<int:product_id>/", views.update_product, name="update_product"),
     path("home/delete/<int:product_id>/", views.delete_product, name="delete_product"),
     path("customers/", views.customers_page, name="customers"),
-    path("customers/delete/<int:customer_id>/", views.delete_customer, name="delete_customer"),
     path("category/<str:category>/", views.category_page, name="category"),
     path('category/<str:category>/subcategory/<str:subcategory>/',views.subcategory_page,name='subcategory_page'),
     # user path(s)
@@ -39,6 +37,7 @@ urlpatterns = [
     path("checkout/", views_user.checkout, name="checkout"),
     path('buy-now/', views_user.buy_now, name='buy_now'),
     path('add_to_cart/', views_user.add_to_cart, name='add_to_cart'),  
+    path("get-cart-count/", views_user.get_cart_count),
     path('api/get_user_cart/', views_user.get_user_cart, name='get_user_cart'),
     path("remove-from-cart/", views_user.remove_from_cart, name="remove_from_cart"),
     path('orders/', views_user.order_summary, name="order_summary"),

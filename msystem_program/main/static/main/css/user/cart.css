@@ -281,3 +281,25 @@ footer .container2 {
   color: #ffffff;
   font-size: 15px;
 }
+
+.view-order {
+  position: absolute;
+  right: 110px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #fff;
+  border: 2px solid #ddd;
+  color: #65360d;
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: 0.3s ease;
+  text-decoration: none !important;
+}
+
+.view-order:hover {
+  background: #f5f3f1;
+  color: #f9940A;
+}

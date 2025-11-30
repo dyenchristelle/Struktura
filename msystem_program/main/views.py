@@ -1,42 +1,19 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .models import Products, Customers, Category, SubCategory
+from .models import Products, Customers, Category, SubCategory, UserCart, UserOrder
 from decimal import Decimal
 from django.contrib.auth.models import User
 from functools import wraps
 from django.db.models import Q
 
 
-def admin_login(request):
-    error = None
-    if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-
-        if username == "admin" and password == "admin123":
-            request.session["user"] = username
-            return redirect("home")
-        else:
-            error = "Invalid username or password."
-    return render(request, "main/admin/base.html", {"error": error})
-    # if request.method == "POST":
-    #     username = request.POST.get("username")
-    #     password = request.POST.get("password")
-
-    #     try:
-    #         if AdminLogin.objects.filter(username=username, password=password).exists():
-    #             return redirect("admin-homepage")
-    #     except AdminLogin.DoesNotExist:
-    #         return render(request, "main/admin/admin-index.html", {"error": "Invalid username or password"})
-        
-    # return render(request, "main/admin/admin-index.html")
 
 def admin_required(view_func):
     @wraps(view_func)
     def wrapper(request, *args, **kwargs):
-        if "user" not in request.session:
-            return redirect("login")
+        if not request.session.get("admin"):
+            return redirect("account")
         return view_func(request, *args, **kwargs)
     return wrapper
 
@@ -45,7 +22,7 @@ def admin_required(view_func):
 @admin_required
 def logout_admin(request):
     request.session.pop("admin", None)
-    return redirect("login")
+    return redirect("account")
 
 #  HOMEPAGE
 def home_page(request):
@@ -148,16 +125,11 @@ def delete_product(request, product_id):
 @admin_required
 def customers_page(request):
     customers = Customers.objects.all()
+    order = UserOrder
+
     return render(request, "main/admin/customers.html", {"customers": customers})
 
-# ===== DELETE CUSTOMER =====
-@admin_required
-def delete_customer(request, customer_id):
-    customer = get_object_or_404(Customers, pk=customer_id)
-    if request.method == "POST":
-        customer.delete()
-        return redirect("customers")
-    return render(request, "main/admin/delete_customer.html", {"customer": customer})
+
 
 
 

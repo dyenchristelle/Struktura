@@ -104,7 +104,7 @@ class UserCart(models.Model):
 
 class UserOrder(models.Model):
     order_id = models.AutoField(primary_key=True, db_column="order_id")
-    user_id = models.ForeignKey(Customers, on_delete=models.CASCADE, db_column="user_id")
+    user_id = models.ForeignKey(Customers, on_delete=models.CASCADE, db_column="user_id", related_name="orders")
     product_id = models.ForeignKey(Products, on_delete=models.CASCADE, db_column="product_id")
     order_quantity = models.IntegerField(db_column="order_quantity")
     order_price = models.DecimalField(max_digits=10, decimal_places=2, db_column="order_price")

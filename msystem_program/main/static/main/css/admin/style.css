@@ -1084,16 +1084,23 @@ a.button {
 }
 
 .customer-transactions th {
-    background-color: #f0f0f0;
+    color: white;
+    font-weight: 200px;
+    background-color: #727171a8;
+}
+
+.customer-transactions td {
+    color: white;
+    background-color: #7271715c;
 }
 
 
 .customer-row {
     display: grid;
     grid-template-columns: 30% 70%;
-    gap: 25px;
-    padding: 20px;
-    background: #4f4f4f8d;
+    gap: 3px;
+    padding: 13px;
+    background: #4f4f4f6f;
     border-radius: 12px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     position: relative;
