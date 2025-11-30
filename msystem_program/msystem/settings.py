@@ -140,3 +140,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 LOGIN_URL = '/account/'
 LOGIN_REDIRECT_URL = '/home_user/'
 LOGOUT_REDIRECT_URL = '/account/'
+
+ADMIN_EMAIL = "struktura2025@gmail.com"
+ADMIN_PASSWORD = "4struktura"

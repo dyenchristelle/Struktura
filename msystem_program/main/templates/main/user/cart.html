@@ -111,7 +111,7 @@
         </div>
         <div class="summary-row">
             <span>Shipping:</span>
-            <span>₱0.00</span>
+            <span>₱250</span>
         </div>
         <div class="summary-row total">
             <span>Total:</span>
@@ -135,6 +135,7 @@
 <script src="{% static 'main/js/user/user-script.js' %}"></script>
 <script>
     const loginUrl = "{% url 'account' %}";
+    const sf = 250;
     // Update subtotal of single item and cart summary
     function updateSubtotal(input) {
         const cartItem = input.closest('.cart-item');
@@ -156,8 +157,9 @@
             subtotal += price * quantity;
         });
 
+        const total = subtotal + sf;
         document.getElementById('cart-subtotal').textContent = '₱' + subtotal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-        document.getElementById('cart-total').textContent = '₱' + subtotal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        document.getElementById('cart-total').textContent = '₱' + total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
     }
 
     // Initial update on page load

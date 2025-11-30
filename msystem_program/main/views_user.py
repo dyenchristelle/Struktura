@@ -3,16 +3,16 @@ from .models import Products, Customers, Category, SubCategory, BrowsingHistory,
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
 from functools import wraps
-from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 from django.views.decorators.http import require_POST
-from django.db import transaction
 import json 
 from django.db.models import Sum
+from django.conf import settings
+from django.contrib.auth.hashers import check_password, make_password
 
-
+# ==== REQUIRING LOGIN ====
 def login_required_custom(view_func):
     @wraps(view_func)
     def wrapper(request, *args, **kwargs):
@@ -21,6 +21,7 @@ def login_required_custom(view_func):
         return view_func(request, *args, **kwargs)
     return wrapper
 
+# ==== USER HOMEPAGE ====
 def home_user(request):
     categories = Category.objects.all()
 
@@ -31,11 +32,12 @@ def home_user(request):
     }
     return render(request, "main/user/home.html", context)
 
+# ==== ABOUT PAGE ====
 def about(request):
     return render(request, "main/user/about.html")
 
 
-# ==== account signup/login
+# ==== account signup/login ====
 def account(request):
     if request.method == "POST":
         name = request.POST.get("user_name")
@@ -43,12 +45,13 @@ def account(request):
         password = request.POST.get("user_password")
         print("Received User Credentials:", name, email, password)
 
-        if email == "struktura2025@gmail.com" and password == "4struktura":
+        # FOR ADMIN LOGIN 
+        if email == settings.ADMIN_EMAIL and password == settings.ADMIN_PASSWORD:
             request.session["admin"] = True
             print("Admin login detected!")
             return redirect('home')
 
-        # check if email already exists
+        # SIGNUP
         if name:
             if Customers.objects.filter(user_email=email).exists():
                 return render(request, "main/user/account.html", {
@@ -67,6 +70,7 @@ def account(request):
                     "name": name
                 })
         
+        # LOGIN
         else:  
             try:
                 customer = Customers.objects.get(user_email=email)
@@ -129,7 +133,6 @@ class TreeNode:
         self.name = name      # category, subcategory, or product name
         self.obj = obj        # store model object
         self.children = []    # child TreeNodes
-
 
 def products_page(request, category=None, subcategory=None):
     categories = Category.objects.all()
@@ -228,7 +231,6 @@ MAX_HISTORY = 30
 
 @require_POST
 def save_browsing_history(request):
-    print("save_browsing_history called")
 
     user_id = request.session.get("customer_id")
     product_id = request.POST.get("product_id")
@@ -294,7 +296,7 @@ def save_browsing_history(request):
             "message": str(e)
         }, status=500)
 
-
+# for displaying
 def get_browsing_history(request):
     user_id = request.session.get("customer_id")
     if not user_id:
@@ -371,8 +373,7 @@ def add_to_cart(request):
 
     return JsonResponse({"status": "success"})
 
-
-    
+# cart of logged in user
 def user_cart(request):
     user_id = request.session.get("customer_id")
 
@@ -394,7 +395,7 @@ def user_cart(request):
         })
     
 
-# === for guest user then logged in ===
+# for guest user then logged in
 def merge_guest_cart_to_user(request, user_id):
     session_cart = get_cart_from_session(request)
     if not session_cart:
@@ -411,7 +412,6 @@ def merge_guest_cart_to_user(request, user_id):
             cart_item.order_quantity += item['quantity']
             cart_item.save()
     
-    # Clear session cart
     request.session['cart'] = {}
     request.session.modified = True
 
@@ -433,9 +433,7 @@ def get_user_cart(request):
 
     return JsonResponse({"cart_items": items})
 
-
-    
-
+# updates cart quantity in cart.html
 @csrf_exempt
 def update_cart_quantity(request):
     if request.method != "POST":
@@ -475,7 +473,7 @@ def remove_from_cart(request):
     cart_id = request.POST.get("cart_id")
     user_id = request.session.get("customer_id")
 
-    # Logged-in user → delete from DB
+    # for logged in user
     if user_id:
         try:
             UserCart.objects.get(cart_id=cart_id, user_id_id=user_id).delete()
@@ -483,7 +481,7 @@ def remove_from_cart(request):
         except UserCart.DoesNotExist:
             return JsonResponse({"status": "error", "message": "Item not found."})
 
-    # Guest user → delete from session
+    # for guest user
     session_cart = get_cart_from_session(request)
 
     if cart_id in session_cart:
@@ -525,7 +523,7 @@ def checkout(request):
 
         user_id = request.session.get("customer_id")
         if not user_id:
-            return JsonResponse({"status": "error", "message": "You must be logged in"})
+            return JsonResponse({"status": "error", "message": "You must login first before purchasing."})
 
         user = Customers.objects.get(user_id=user_id)
 
@@ -570,7 +568,6 @@ def checkout(request):
 # in buynow button from modal
 @csrf_exempt
 def buy_now(request):
-    print("DEBUG PY: Buy Now endpoint HIT")
     print("DEBUG PY: Request method:", request.method)
     print("DEBUG PY: Request body RAW:", request.body)
 
@@ -587,7 +584,7 @@ def buy_now(request):
 
         user_id = request.session.get("customer_id")
         if not user_id:
-            return JsonResponse({"status": "error", "message": "You must be logged in"})
+            return JsonResponse({"status": "error", "message": "You must login first before purchasing."})
 
         user = Customers.objects.get(user_id=user_id)
 

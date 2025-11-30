@@ -79,7 +79,20 @@ body {
   margin-left: 1.5rem;
   cursor: pointer;
   transition: color 0.2s ease-in-out;
+  text-decoration: none !important;
 }
+
+.profile-link {
+    text-decoration: none !important;
+    color: inherit !important;
+    line-height: 0 !important;
+    font-size: 0 !important;
+}
+
+.profile-link i {
+    font-size: 35px; /* or whatever size your icon is */
+}
+
 
 .header .icon i:hover {
   color: #f9940A;
@@ -199,7 +212,7 @@ body {
   margin: 0 0 20px 0;
   margin-top: 5%;
   margin-left: 5%;
-  color: #65360d;
+  color: #ffffff;
 }
 
 /* ======= BEST ITEM ======= */
