@@ -6,7 +6,7 @@
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  min-height: 70vh; /* Added to prevent footer from rising when cart is empty */
+  min-height: 70vh; 
 }
 
 /* ======= CART ITEMS ======= */
@@ -167,7 +167,7 @@
 /* ======= RESPONSIVE DESIGN ======= */
 @media (max-width: 768px) {
   .cart-container {
-    min-height: 60vh; /* Adjusted for mobile */
+    min-height: 60vh; 
   }
 
   .cart-item {
@@ -193,7 +193,7 @@
 @media (max-width: 480px) {
   .cart-container {
     padding: 10px;
-    min-height: 50vh; /* Further adjusted for small screens */
+    min-height: 50vh; 
   }
 
   .cart-item {

@@ -36,7 +36,11 @@
 
         <div class="icon">
             <a href="{% url 'account' %}"><i class="fa-solid fa-circle-user"></i></a>
-            <i class="fa-solid fa-cart-shopping"></i>
+            <a href="{% url 'user_cart' %}">
+                <i class="fa-solid fa-cart-shopping">
+                <span id="cart-badge" class="cart-badge" style="display:none;"></span>
+                </i>
+            </a>
         </div>
     </div>
 

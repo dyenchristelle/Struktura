@@ -90,7 +90,7 @@ body {
 }
 
 .profile-link i {
-    font-size: 35px; /* or whatever size your icon is */
+    font-size: 35px; 
 }
 
 
@@ -574,7 +574,6 @@ footer .container2 {
 }
 
 /*bottom logo*/
-/* 📱 Small screens (phones) */
 @media (max-width: 768px) {
   .logoimg img {
     max-width: 180px; /* smaller for mobile */
@@ -582,14 +581,12 @@ footer .container2 {
   }
 }
 
-/* 💻 Medium screens (tablets) */
 @media (min-width: 769px) and (max-width: 1024px) {
   .logoimg img {
     max-width: 220px; /* medium size */
   }
 }
 
-/* 🖥️ Large screens (desktops) */
 @media (min-width: 1025px) {
   .logoimg img {
     max-width: 300px;
@@ -605,14 +602,12 @@ footer .container2 {
 }
 
 
-/* Container of the search bar */
 .search-bar {
     display: inline-block;  
     position: relative;        
     margin-left: 20px;           
 }
 
-/* Input field itself */
 .search-bar input {
     width: 250px;               
     padding: 8px 12px;          
@@ -623,13 +618,11 @@ footer .container2 {
     transition: all 0.3s ease; 
 }
 
-/* Focus state for nicer appearance */
 .search-bar input:focus {
     border-color: #f9940A;       
     box-shadow: 0 0 5px rgba(0,0,0,0.2); 
 }
 
-/* Placeholder text style */
 .search-bar input::placeholder {
     color: #888;             
     font-style: italic;

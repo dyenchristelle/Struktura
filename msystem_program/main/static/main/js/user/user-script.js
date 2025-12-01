@@ -1,6 +1,6 @@
 let cart = JSON.parse(sessionStorage.getItem("cart")) || [];
 
-// ===== HELPER: GET CSRF TOKEN =====
+// ===== GET CSRF TOKEN =====
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -130,7 +130,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (modalImg) modalImg.src = productImage;
         if (modalName) modalName.textContent = productName;
         if (modalPrice) modalPrice.textContent = `₱${parseFloat(productPrice).toLocaleString()}`;
-        if (modalDescription) modalDescription.textContent = productDescription;
+        if (modalDescription) {
+            modalDescription.innerHTML = productDescription.replace(/(\r\n|\n|\r)/g, "<br>");
+        }
 
         productModal.dataset.currentProductId = productId;
         productModal.classList.add('active');
@@ -139,13 +141,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.style.overflow = 'hidden';
 
         console.log("DEBUG: buyNowBtn.dataset.id SET TO =", productId);
-        // const buyNowBtn = document.getElementById("buyNowBtn");
-        // if (buyNowBtn) {
-        //     buyNowBtn.dataset.id = productId;
-        //     console.log("DEBUG: buyNowBtn.dataset.id SET TO =", productId);
-        // }
 
-        // Optional: save browsing history
         fetch('/api/save_browsing_history/', {
             method: 'POST',
             headers: {
@@ -357,7 +353,6 @@ function updateCartItemSubtotal(input) {
 
     updateCartTotal();
 
-    // Optionally, update DB via AJAX
     fetch('/update_cart_quantity/', {
         method: 'POST',
         headers: {
@@ -415,7 +410,6 @@ function updateCartSummary() {
     document.getElementById('cart-total').textContent = '₱' + subtotal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
 }
 
-// Call this after quantity change
 function updateSubtotal(input) {
     const cartItem = input.closest('.cart-item');
     const price = parseFloat(cartItem.dataset.productPrice);
@@ -444,7 +438,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         cart = JSON.parse(sessionStorage.getItem('cart')) || [];
     }
 
-    // Initialize badge and display
     updateCartBadge();
     updateCartDisplay();
 });
@@ -496,7 +489,6 @@ document.getElementById("checkoutBtn").addEventListener("click", function () {
 
     console.log("DEBUG: Checkout clicked");
 
-    // Collect cart items from the page
     const cartItems = [];
     document.querySelectorAll(".cart-item").forEach(item => {
         cartItems.push({

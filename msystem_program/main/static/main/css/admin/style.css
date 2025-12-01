@@ -53,10 +53,10 @@ main {
 }
 
 .page-layout {
-  height: 100vh; /* Full height of the viewport */
-  overflow-y: auto; /* Enables vertical scrolling */
+  height: 100vh; 
+  overflow-y: auto; 
   overflow-x: hidden;
-  background: rgba(255, 255, 255, 0); /* Optional semi-transparent layer */
+  background: rgba(255, 255, 255, 0); 
   /* backdrop-filter: blur(5px);  */
   padding: 20px;
 }
@@ -84,9 +84,9 @@ main {
 
 label[for="username"],
 label[for="password"] {
-    color: #fed3ae; /* your chosen color */
+    color: #fed3ae; 
     font-weight: 600;
-    letter-spacing: 0.5px; /* optional for cleaner text */
+    letter-spacing: 0.5px; 
 }
 
 form input[type="text"],
@@ -125,7 +125,7 @@ form input[type="submit"]:hover {
     font-size: 14px;
 }
 
-/* ===== Footer (optional future use) ===== */
+/* ===== Footer ===== */
 footer {
     display: block;
     border-top: 0.2vh solid #c6c3c3;
@@ -133,7 +133,7 @@ footer {
     height: 20%;
 }
 
-/* ===== Box-sizing fix ===== */
+/* ===== Box-sizing ===== */
 * {
     box-sizing: border-box;
 }
@@ -150,27 +150,6 @@ footer {
     margin-bottom: 30px;
 }
 
-/* .search-form input[type="text"] {
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: none;
-    width: 250px;
-    margin-right: 10px;
-}
-
-.search-form input[type="submit"] {
-    background-color: #65360d;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-}
-
-.search-form input[type="submit"]:hover {
-    background-color: #854d1a;
-} */
 
 .products-section {
   overflow: visible;
@@ -179,7 +158,7 @@ footer {
   gap: 15px;
   justify-items: flex-start;
   margin: 0;
-  clear: both; /* ensures it starts below previous elements */
+  clear: both; 
   align-items: start;
   position: relative;
   z-index: 1;
@@ -337,17 +316,6 @@ body.add-bg, body.update-bg {
     transform: scale(1.03);
 }
 
-/* .add-product-section textarea {
-    width: 95%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 15px;
-    min-height: 40px;
-    resize: vertical;
-    box-sizing: border-box;
-} */
 
 /* Back button */
 .back-to-products {
@@ -486,12 +454,12 @@ body.delete-bg {
 .title-row {
     overflow: visible !important;
     display: flex;
-    justify-content: space-between; /* left & right alignment */
-    align-items: center;            /* vertically centered */
-    padding: 0 40px;                /* spacing from screen edges */
+    justify-content: space-between; 
+    align-items: center;            
+    padding: 0 40px;               
     margin-top: 0;
     margin-bottom: 10px;
-    position: relative;    /* keep in normal flow */
+    position: relative;   
     z-index: 1000; 
     gap: 800px;
 }
@@ -503,7 +471,7 @@ body.delete-bg {
     font-size: 30px;
     color: #faf2e1;
     text-transform: uppercase;
-    margin: 0; /* remove extra spacing */
+    margin: 0; 
     position: relative;
     z-index: 2;
 }
@@ -540,15 +508,15 @@ body.delete-bg {
 
 /* Dropdown menu */
 .dropdown {
-  position: relative; /* Ensures the dropdown-content positions relative to this container */
-  display: inline-block; /* Keeps it aligned with h2 or text */
-  vertical-align: middle; /* Helps align with nearby elements like h2 */
+  position: relative; 
+  display: inline-block; 
+  vertical-align: middle; 
 }
 
 .dropdown-content {
     display: none;
     position: absolute;
-    top: 100%; /* below the button */
+    top: 100%; 
     right: 0;
     background-color: #494949;
     border: 0;
@@ -581,14 +549,13 @@ body.delete-bg {
   cursor: pointer;
 }
 
-/* Hover effect for list buttons */
 .dropdown-content li:hover {
   background-color: #674f1c;
   transform: scale(1.05);
 }
 
 .subcategory-page {
-    height: 88vh; /* always full viewport */
+    height: 88vh;
     width: 100vw;
     padding-top: 0px;
     box-sizing: border-box;
@@ -849,10 +816,10 @@ a.button {
 /* delete product */
 /* Container for the confirmation box */
 .delete-product-container {
-    background-color: rgba(255, 255, 255, 0.95); /* slightly transparent white */
+    background-color: rgba(255, 255, 255, 0.95); 
     width: 400px;
     max-width: 90%;
-    margin: 80px auto; /* center horizontally, some space from top */
+    margin: 80px auto; 
     padding: 30px 25px;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.25);
@@ -864,7 +831,7 @@ a.button {
 .delete-product-container h2 {
     font-size: 25px;
     margin-bottom: 5px;
-    color: #000000; /* dark red to indicate warning */
+    color: #000000; 
 }
 
 /* Paragraph text */
@@ -888,13 +855,13 @@ a.button {
 
 /* Delete button style */
 .delete-form .delete-btn {
-    background-color: #b22222; /* dark red */
+    background-color: #b22222; 
     color: white;
     border: none;
 }
 
 .delete-form .delete-btn:hover {
-    background-color: #8b1a1a; /* darker red on hover */
+    background-color: #8b1a1a; 
     transform: scale(1.05);
 }
 
@@ -926,7 +893,7 @@ a.button {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 0;  /* no spacing between input and button */
+    gap: 0;  
 }
 
 .search {
@@ -1049,9 +1016,9 @@ a.button {
     width: 1200px;
     margin: 0 auto;
 
-    height: 600px;        /* set any height you want */
-    overflow-y: auto;     /* makes it scrollable */
-    padding-right: 10px;  /* optional: avoids content being cut by scrollbar */
+    height: 600px;     
+    overflow-y: auto;     
+    padding-right: 10px;  
 }
 
 .customer-row {
@@ -1068,7 +1035,7 @@ a.button {
 
 .customer-transactions {
     flex: 2; /* right column */
-    overflow-x: auto; /* scroll if table too wide */
+    overflow-x: auto; 
 }
 
 .customer-transactions table {
@@ -1110,7 +1077,7 @@ a.button {
 .customer-row:before {
     content: "";
     position: absolute;
-    left: 30%; /* exactly between the 2 columns */
+    left: 30%; 
     top: 10px;
     bottom: 10px;
     width: 1px;
@@ -1122,8 +1089,27 @@ a.button {
         grid-template-columns: 1fr;
     }
 
-    /* Remove divider on mobile view */
     .customer-row:before {
         display: none;
     }
+}
+
+
+.upload-file {
+  display: inline-block;
+  background: #4e46e500;
+  color: rgb(68, 67, 67);
+  padding: 10px 18px;
+  font-size: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.upload-file:hover {
+  background: #d4a95427;
+}
+
+.upload-file input {
+  display: none;
 }
