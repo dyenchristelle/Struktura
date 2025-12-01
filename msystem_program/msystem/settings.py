@@ -79,13 +79,14 @@ WSGI_APPLICATION = 'msystem.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'struktura',
+        'NAME': 'struktura',         
         'USER': 'postgres',
         'PASSWORD': 'struktura',
         'HOST': 'localhost',
         'PORT': '5432',
     }
 }
+
 
 
 # Password validation
