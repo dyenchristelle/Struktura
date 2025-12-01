@@ -17,7 +17,7 @@
                 {% if category_tree.children %}
                     {% for sub in category_tree.children %}
                         <li>
-                            <a href="{% url 'subcategory_page' category.name sub.name %}">{{ sub.name }}</a>
+                            <a href="{% url 'subcategory_admin' category.name sub.name %}">{{ sub.name }}</a>
                         </li>
                     {% endfor %}
                 {% else %}

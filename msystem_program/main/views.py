@@ -18,13 +18,13 @@ def admin_required(view_func):
     return wrapper
 
 
-# LOGOUT
+# ==== LOGOUT ====
 @admin_required
 def logout_admin(request):
     request.session.pop("admin", None)
     return redirect("account")
 
-#  HOMEPAGE
+# ==== HOMEPAGE ====
 def home_page(request):
     categories = Category.objects.all()
 
@@ -47,7 +47,7 @@ def home_page(request):
 
     return render(request, 'main/admin/home.html', context)
 
-# SEARCH
+# ==== SEARCH ====
 def search_view(request):
     search_query = request.GET.get('search', '')
 
@@ -69,25 +69,25 @@ def add_product(request):
         quantity = request.POST.get("product_quantity")
         price = request.POST.get("product_price")
         description = request.POST.get("product_description")
-        category_id = request.POST["category_name"]
-        subcategory = request.POST["subcategory_id"]
+        category_id = request.POST.get("category_name")
+        subcategory_id = request.POST.get("subcategory_id")
         image = request.FILES.get("product_image")
-        print("Received POST data:", name, quantity, price, category_id, subcategory, image, description)
+        print("Received POST data:", name, quantity, price, category_id, subcategory_id, image, description)
 
         try:
             quantity = int(quantity)
             price = Decimal(price)
             category_obj = Category.objects.get(pk=int(category_id))
-            subcategory_obj = None
-            if subcategory:
-                subcategory_obj = SubCategory.objects.get(pk=int(subcategory))
+            subcategory_obj = SubCategory.objects.get(pk=int(subcategory_id)) if subcategory_id else None
+
+            # Products table = main data structure
             Products.objects.create(
                 item_name=name,
                 item_quantity=quantity,
                 item_price=price,
                 item_description=description,
                 item_category=category_obj,
-                subcategory=subcategory_obj, 
+                subcategory=subcategory_obj,
                 item_image=image
             )
             print("Item added.")
@@ -95,36 +95,46 @@ def add_product(request):
         except Exception as e:
             print("Error adding product.", repr(e))
             return render(request, "main/admin/home.html", {"error": f"Could not add product: {e}"})
-    
+
     return render(request, "main/admin/add_product.html")
+
 
 # ===== UPDATE PRODUCT =====
 @admin_required
 def update_product(request, product_id):
+    # Look up product in Products table
     product = get_object_or_404(Products, pk=product_id)
     category = product.item_category
+
     if request.method == "POST":
         product.item_name = request.POST.get("product_name")
         product.item_quantity = int(request.POST.get("product_quantity"))
         product.item_price = Decimal(request.POST.get("product_price"))
-        product.save()
+        product.save()  # Update row in Products table
         return redirect("category", category.name)
-    return render(request, "main/admin/update_product.html", {"product": product, "category": category,})
+
+    return render(request, "main/admin/update_product.html", {"product": product, "category": category})
+
 
 # ===== DELETE PRODUCT =====
 @admin_required
 def delete_product(request, product_id):
+    # Look up product in Products table
     product = get_object_or_404(Products, pk=product_id)
     category = product.item_category
+
     if request.method == "POST":
-        product.delete()
+        product.delete()  # Remove row from Products table
         return redirect("category", category.name)
-    return render(request, "main/admin/delete_product.html", {"product": product, "category": category, })
+
+    return render(request, "main/admin/delete_product.html", {"product": product, "category": category})
+
+
 
 # ===== CUSTOMERS PAGE =====
 @admin_required
 def customers_page(request):
-    customers = Customers.objects.all()
+    customers = list(Customers.objects.all())
     order = UserOrder
 
     return render(request, "main/admin/customers.html", {"customers": customers})
@@ -139,7 +149,6 @@ class TreeNode:
         self.name = name
         self.obj = obj
         self.children = []
-
 
 @admin_required
 def category_page(request, category):
@@ -173,8 +182,6 @@ def category_page(request, category):
         "products": products,
         "category_tree": root_node,
     })
-
-
 
 @admin_required
 def subcategory_page(request, category, subcategory):

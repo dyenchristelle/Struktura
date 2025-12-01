@@ -151,8 +151,7 @@
     <div class="ellipse">
         <div class="items">
             {% for category in categories %}
-                <a href="{% url 'products_category' category.name %}#productsection" 
-                   class="{% if selected_category == category.id %}active{% endif %}">
+                <a href="{% url 'products_category' category.name %}#productsection">
                     {% if category.image %}
                         <img src="{{ category.image.url }}" alt="{{ category.name }}">
                     {% else %}
